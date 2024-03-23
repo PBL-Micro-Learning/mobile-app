@@ -26,11 +26,11 @@ import ColorsWatchImage from "@/theme/assets/images/colorswatch.png";
 import TranslateImage from "@/theme/assets/images/translate.png";
 import SelectDropdown from "react-native-select-dropdown";
 import { API_URL } from "@/const";
+import { useAuthStore } from "@/store/auth";
 const genders = ["Pria", "Wanita"];
 
 function Login({ navigation }) {
-	const { t } = useTranslation(["example", "welcome"]);
-	const [name, onChangeName] = useState("");
+	const { token, setAuthToken, setAuthData } = useAuthStore()
 	const [email, onChangeEmail] = useState("");
 	const [password, onChangePassword] = useState("");
 	const {
@@ -54,12 +54,6 @@ function Login({ navigation }) {
 		enabled: currentId >= 0,
 	});
 
-	useEffect(() => {
-		if (isSuccess) {
-			Alert.alert(t("example:welcome", data.name));
-		}
-	}, [isSuccess, data]);
-
 	const onPressLogin = async () => {
 		const response = await fetch(`${API_URL}/auth/login`, {
 			method: 'POST',
@@ -73,11 +67,17 @@ function Login({ navigation }) {
 			}),
 		})
 		const json = await response.json()
-		console.log('login', json)
-		if (response.status === 200) Alert.alert('Login Success!')
+		console.log('login', json.data.user.token)
+		if (response.status === 200) {
+			Alert.alert('Login Success!')
+			setAuthToken(json.data.user.token)
+			setAuthData(json.data.user)
+			navigation.navigate('Dashboard')
+		}
 		if (response.status === 400) Alert.alert('Login Failed!')
 	};
 
+	console.log('token', token);
 	return (
 		<SafeScreen>
 			<ScrollView>
@@ -86,10 +86,10 @@ function Login({ navigation }) {
 					layout.itemsCenter,
 					gutters.marginTop_80,
 				]}>
-					<View style={[layout.relative, backgrounds.gray100, components.circle250]} />
+					<View style={[layout.relative, components.circle250]} />
 
-					<View style={[layout.absolute, gutters.paddingTop_80]}>
-						<Brand height={300} width={300} />
+					<View style={[layout.absolute]}>
+						<Brand height={200} width={200} />
 					</View>
 				</View>
 
