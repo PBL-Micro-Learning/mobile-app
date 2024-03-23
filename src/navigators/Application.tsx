@@ -1,12 +1,10 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
-import { Startup } from '@/screens';
+import { Login, Register, Startup } from '@/screens';
 import { useTheme } from '@/theme';
 
 import type { ApplicationStackParamList } from '@/types/navigation';
-import Register from '@/screens/Register/Register';
-
 const Stack = createStackNavigator<ApplicationStackParamList>();
 
 function ApplicationNavigator() {
@@ -14,9 +12,10 @@ function ApplicationNavigator() {
 
 	return (
 		<NavigationContainer theme={navigationTheme}>
-			<Stack.Navigator key={variant} screenOptions={{ headerShown: false }}>
+			<Stack.Navigator key={variant} screenOptions={{ headerShown: false }} initialRouteName='Login'>
 				<Stack.Screen name="Startup" component={Startup} />
 				<Stack.Screen name="Register" component={Register} />
+				<Stack.Screen name="Login" component={Login} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

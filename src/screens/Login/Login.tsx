@@ -28,7 +28,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import { API_URL } from "@/const";
 const genders = ["Pria", "Wanita"];
 
-function Register({ navigation }) {
+function Login({ navigation }) {
 	const { t } = useTranslation(["example", "welcome"]);
 	const [name, onChangeName] = useState("");
 	const [email, onChangeEmail] = useState("");
@@ -60,39 +60,37 @@ function Register({ navigation }) {
 		}
 	}, [isSuccess, data]);
 
-	const onPressCreate = async () => {
-		const response = await fetch(`${API_URL}/auth/register`, {
+	const onPressLogin = async () => {
+		const response = await fetch(`${API_URL}/auth/login`, {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				name,
 				email,
 				password
 			}),
 		})
 		const json = await response.json()
-		console.log('register', json)
-		if (response.status === 200) Alert.alert('Create Account Success!')
-		if (response.status === 400) Alert.alert('Create Account Failed!')
+		console.log('login', json)
+		if (response.status === 200) Alert.alert('Login Success!')
+		if (response.status === 400) Alert.alert('Login Failed!')
 	};
-
 
 	return (
 		<SafeScreen>
 			<ScrollView>
-				<View
-					style={[
-						layout.justifyCenter,
-						layout.itemsCenter,
-						gutters.marginTop_80,
-					]}
-				>
-					<Text style={[fonts.size_40, fonts.gray800, fonts.bold]}>
-						Create Account
-					</Text>
+				<View style={[
+					layout.justifyCenter,
+					layout.itemsCenter,
+					gutters.marginTop_80,
+				]}>
+					<View style={[layout.relative, backgrounds.gray100, components.circle250]} />
+
+					<View style={[layout.absolute, gutters.paddingTop_80]}>
+						<Brand height={300} width={300} />
+					</View>
 				</View>
 
 				<View style={[gutters.paddingHorizontal_32, gutters.marginTop_40]}>
@@ -103,40 +101,9 @@ function Register({ navigation }) {
 								gutters.padding_12,
 								{ height: 40, borderWidth: 1 },
 							]}
-							onChangeText={onChangeName}
-							placeholder="Fullname"
-							value={name}
-						/>
-						<TextInput
-							style={[
-								gutters.marginVertical_12,
-								gutters.padding_12,
-								{ height: 40, borderWidth: 1 },
-							]}
 							onChangeText={onChangeEmail}
 							value={email}
 							placeholder="Email"
-						/>
-						<SelectDropdown
-							buttonStyle={[
-								gutters.marginVertical_12,
-								layout.fullWidth,
-								{ height: 40, borderWidth: 1 },
-							]}
-							data={genders}
-							onSelect={(selectedItem, index) => {
-								console.log(selectedItem, index);
-							}}
-							buttonTextAfterSelection={(selectedItem, index) => {
-								// text represented after item is selected
-								// if data array is an array of objects then return selectedItem.property to render after item is selected
-								return selectedItem;
-							}}
-							rowTextForSelection={(item, index) => {
-								// text represented for each item in dropdown
-								// if data array is an array of objects then return item.property to represent item in dropdown
-								return item;
-							}}
 						/>
 						<TextInput
 							style={[
@@ -159,15 +126,14 @@ function Register({ navigation }) {
 						]}
 					>
 						<Button
-							onPress={onPressCreate}
-							title="Create"
+							onPress={onPressLogin}
+							title="Login"
 							color={colors.gray800}
 							accessibilityLabel="Learn more about this purple button"
 						/>
-
 						<Button
-							title="Go to Login"
-							onPress={() => navigation.navigate('Login')}
+							title="Go to Register"
+							onPress={() => navigation.navigate('Register')}
 						/>
 					</View>
 				</View>
@@ -176,4 +142,4 @@ function Register({ navigation }) {
 	);
 }
 
-export default Register;
+export default Login;
