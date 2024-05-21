@@ -27,6 +27,7 @@ import TranslateImage from "@/theme/assets/images/translate.png";
 import SelectDropdown from "react-native-select-dropdown";
 import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
+import HomeList from "@/components/home/HomeList";
 const genders = ["Pria", "Wanita"];
 
 function Home({ navigation }) {
@@ -54,43 +55,30 @@ function Home({ navigation }) {
         enabled: currentId >= 0,
     });
 
-    const onPressLogin = async () => {
-        const response = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
+    const getCourses = async () => {
+        const response = await fetch(`${API_URL}/courses`, {
+            method: 'GET',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                email,
-                password
-            }),
         })
         const json = await response.json()
-        console.log('login', json.data.user.token)
-        if (response.status === 200) {
-            Alert.alert('Login Success!')
-            setAuthToken(json.data.user.token)
-            navigation.navigate('Dashboard')
-        }
-        if (response.status === 400) Alert.alert('Login Failed!')
+        console.log('login', json)
+        // if (response.status === 200) {
+        //     Alert.alert('Login Success!')
+        //     setAuthToken(json.data.user.token)
+        //     navigation.navigate('Dashboard')
+        // }
+        // if (response.status === 400) Alert.alert('Login Failed!')
     };
+    useEffect(() => {
+        getCourses()
+    }, [])
 
     return (
         <SafeScreen>
-            <ScrollView>
-                <View
-                    style={[
-                        layout.justifyCenter,
-                        layout.itemsCenter,
-                        gutters.marginTop_80,
-                    ]}
-                >
-                    <Text style={[fonts.size_40, fonts.gray800, fonts.bold]}>
-                        Home
-                    </Text>
-                </View>
-            </ScrollView>
+            <HomeList />
         </SafeScreen>
     );
 }
