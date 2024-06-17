@@ -11,7 +11,6 @@ const Stack = createStackNavigator<ApplicationStackParamList>();
 function ApplicationNavigator() {
 	const { variant, navigationTheme } = useTheme();
 	const { token } = useAuthStore();
-	console.log('home token', token)
 	return (
 		<NavigationContainer theme={navigationTheme}>
 			<Stack.Navigator key={variant} screenOptions={{ headerShown: false }} initialRouteName='Login'>

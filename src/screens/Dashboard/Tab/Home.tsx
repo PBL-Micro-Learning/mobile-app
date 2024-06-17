@@ -31,6 +31,7 @@ import HomeList from "@/components/home/HomeList";
 const genders = ["Pria", "Wanita"];
 
 function Home({ navigation }) {
+    const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
     const { token, setAuthToken } = useAuthStore()
     const [email, onChangeEmail] = useState("");
     const [password, onChangePassword] = useState("");
@@ -45,15 +46,6 @@ function Home({ navigation }) {
         backgrounds,
     } = useTheme();
 
-    const [currentId, setCurrentId] = useState(-1);
-
-    const { isSuccess, data, isFetching } = useQuery({
-        queryKey: ["example", currentId],
-        queryFn: () => {
-            return fetchOne(currentId);
-        },
-        enabled: currentId >= 0,
-    });
 
     const getCourses = async () => {
         const response = await fetch(`${API_URL}/courses`, {
@@ -78,6 +70,15 @@ function Home({ navigation }) {
 
     return (
         <SafeScreen>
+            <Text style={{ color: '#AE2929', fontWeight: '700', fontSize: 28 }}>Beranda</Text>
+            <View style={{
+                display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginVertical: 4
+            }}>
+                {categories.map((c) => {
+                    return <View style={{ paddingHorizontal: 8, paddingVertical: 2, backgroundColor: '#D9D9D9' }}><Text style={{ fontWeight: '700', color: '#000000' }}>{c}</Text></View>
+                })
+                }
+            </View>
             <HomeList />
         </SafeScreen>
     );

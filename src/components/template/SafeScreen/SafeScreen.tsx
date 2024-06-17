@@ -11,7 +11,10 @@ function SafeScreen({ children }: PropsWithChildren) {
 		<SafeAreaView
 			style={[
 				layout.flex_1,
-				{ backgroundColor: navigationTheme.colors.background },
+				{
+					backgroundColor: navigationTheme.colors.background,
+					padding: 4
+				},
 			]}
 		>
 			<StatusBar

@@ -17,44 +17,20 @@ interface IHomeListItem extends IData {
 
 const dummyData = [
     {
-        name: 'Pemrograman Dasar',
-        teacherName: 'Thoriq Nur Faizal',
-        time: '90 Min',
-        url: ''
+        name: 'Dasar Pemrograman Javascript: INTRO',
+        teacherName: 'Sandhika Galih',
+        time: '7:53 Min',
+        url: 'https://youtu.be/RUTV_5m4VeI?si=t6LVt7ckbJPNUwb3'
     }, {
-        name: 'Pemrograman Lanjutan',
-        teacherName: 'Guntur Kurniawan',
-        time: '120 Min',
-        url: ''
+        name: 'Apa Itu Javascript?',
+        teacherName: 'Sandhika Galih',
+        time: '9:51 Min',
+        url: 'https://youtu.be/Ncrlg9kTC6U?si=huUXkZoiFL_t81pb'
     }, {
-        name: 'Perancangan Database',
-        teacherName: 'Tatang Romadhona',
-        time: '120 Min',
-        url: ''
-
-    }, {
-        name: 'Perancangan Interface',
-        teacherName: 'Andi Satriawan',
-        time: '120 Min',
-        url: ''
-
-    }, {
-        name: 'Perancangan Infrastruktur',
-        teacherName: 'Zain Fathoni',
-        time: '120 Min',
-        url: ''
-
-    }, {
-        name: 'Pengelolaan Proyek',
-        teacherName: 'Haidar Hanif',
-        time: '120 Min',
-        url: ''
-
-    }, {
-        name: 'Pengelolaan Sumber Daya',
-        teacherName: 'Dana',
-        time: '120 Min',
-        url: ''
+        name: 'Bahasa Pemrograman',
+        teacherName: 'Sandhika Galih',
+        time: '11:43 Min',
+        url: 'https://youtu.be/dugL0oYx0w0?si=1w9dOzOf9Uaws9k_'
 
     }
 ]

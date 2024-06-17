@@ -9,15 +9,11 @@ import {
 	TextInput,
 	Button,
 } from "react-native";
-import i18next from "i18next";
-import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
+import Logo from '@/theme/assets/images/microlearning.png';
 
 import { ImageVariant } from "@/components/atoms";
-import { Brand } from "@/components/molecules";
 import { SafeScreen } from "@/components/template";
 import { useTheme } from "@/theme";
-import { fetchOne } from "@/services/users";
 
 import { isImageSourcePropType } from "@/types/guards/image";
 
@@ -105,6 +101,24 @@ function Dashboard({ navigation }) {
 		);
 	}
 
+	const HeaderImage = () => {
+		return (
+			(
+				<ImageVariant source={Logo} style={{ width: 40, height: 40, borderRadius: 20 }} />
+			)
+		)
+	}
+	const Logout = () => {
+		return (
+			(
+				<Text
+					onPress={() => removeAuthToken()}
+					style={{ color: "#AE2929", fontSize: 20, fontWeight: '700' }}
+				>Logout</Text>
+			)
+		)
+	}
+
 	return (
 		<SafeScreen>
 			<Tab.Navigator
@@ -125,15 +139,35 @@ function Dashboard({ navigation }) {
 					tabBarIconStyle: {
 						top: 10,
 					},
-					headerShown: false,
+					headerShown: true,
 					tabBarActiveTintColor: colors.red500,
 					tabBarInactiveTintColor: colors.gray400,
 				}}
 			>
-				<Tab.Screen name="Home" component={Home} />
-				<Tab.Screen name="Search" component={Search} />
-				<Tab.Screen name="Class" component={Class} />
-				<Tab.Screen name="Profile" component={Profile} />
+				<Tab.Screen name="Home" component={Home}
+					options={{
+						headerTitle: HeaderImage,
+						headerRight: Logout,
+					}}
+				/>
+				<Tab.Screen name="Search" component={Search}
+					options={{
+						headerTitle: HeaderImage,
+						headerRight: Logout,
+					}}
+				/>
+				<Tab.Screen name="Class" component={Class}
+					options={{
+						headerTitle: HeaderImage,
+						headerRight: Logout,
+					}}
+				/>
+				<Tab.Screen name="Profile" component={Profile}
+					options={{
+						headerTitle: HeaderImage,
+						headerRight: Logout,
+					}}
+				/>
 			</Tab.Navigator>
 		</SafeScreen>
 	);
