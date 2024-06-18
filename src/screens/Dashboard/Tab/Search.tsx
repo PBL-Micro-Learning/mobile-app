@@ -27,11 +27,33 @@ import TranslateImage from "@/theme/assets/images/translate.png";
 import SelectDropdown from "react-native-select-dropdown";
 import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
+import SearchList from "@/components/search/SearchList";
 const genders = ["Pria", "Wanita"];
 
+const dummyData = [
+    {
+        name: 'Dasar Pemrograman Javascript: INTRO',
+        teacherName: 'Sandhika Galih',
+        time: '7:53 Min',
+        progress: 100
+    }, {
+        name: 'Apa Itu Javascript?',
+        teacherName: 'Sandhika Galih',
+        time: '9:51 Min',
+        progress: 50
+    }, {
+        name: 'Bahasa Pemrograman',
+        teacherName: 'Sandhika Galih',
+        time: '11:43 Min',
+        progress: 30
+
+    }
+]
 function Search({ navigation }) {
+    const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
     const { token, setAuthToken } = useAuthStore()
-    const [email, onChangeEmail] = useState("");
+    const [search, onChangeSearch] = useState("");
+    const [listData, setListData] = useState(dummyData)
     const [password, onChangePassword] = useState("");
     const {
         colors,
@@ -43,54 +65,49 @@ function Search({ navigation }) {
         components,
         backgrounds,
     } = useTheme();
+    useEffect(() => {
+        const filteredSearch = dummyData.filter(d => d.name.toLowerCase().includes(search.toLowerCase()))
+        console.log('filteredSearch', filteredSearch)
+        setListData(filteredSearch)
+    }, [search])
 
-    const [currentId, setCurrentId] = useState(-1);
 
-    const { isSuccess, data, isFetching } = useQuery({
-        queryKey: ["example", currentId],
-        queryFn: () => {
-            return fetchOne(currentId);
-        },
-        enabled: currentId >= 0,
-    });
 
-    const onPressLogin = async () => {
-        const response = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
+    const getCourses = async () => {
+        const response = await fetch(`${API_URL}/courses`, {
+            method: 'GET',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                email,
-                password
-            }),
         })
         const json = await response.json()
-        console.log('login', json.data.user.token)
-        if (response.status === 200) {
-            Alert.alert('Login Success!')
-            setAuthToken(json.data.user.token)
-            navigation.navigate('Dashboard')
-        }
-        if (response.status === 400) Alert.alert('Login Failed!')
+        console.log('courses', json)
+        // if (response.status === 200) {
+        //     Alert.alert('Login Success!')
+        //     setAuthToken(json.data.user.token)
+        //     navigation.navigate('Dashboard')
+        // }
+        // if (response.status === 400) Alert.alert('Login Failed!')
     };
+    useEffect(() => {
+        getCourses()
+    }, [])
 
     return (
         <SafeScreen>
-            <ScrollView>
-                <View
-                    style={[
-                        layout.justifyCenter,
-                        layout.itemsCenter,
-                        gutters.marginTop_80,
-                    ]}
-                >
-                    <Text style={[fonts.size_40, fonts.gray800, fonts.bold]}>
-                        Search
-                    </Text>
-                </View>
-            </ScrollView>
+            <Text style={{ color: '#AE2929', fontWeight: '700', fontSize: 28 }}>Cari</Text>
+            <TextInput
+                style={[
+                    gutters.marginVertical_12,
+                    gutters.padding_12,
+                    { height: 40, borderWidth: 1 },
+                ]}
+                onChangeText={onChangeSearch}
+                value={search}
+                placeholder="Search"
+            />
+            <SearchList search={search} data={listData} />
         </SafeScreen>
     );
 }

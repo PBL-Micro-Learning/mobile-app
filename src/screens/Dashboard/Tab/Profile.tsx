@@ -12,6 +12,7 @@ import {
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
+import Logo from '@/theme/assets/images/microlearning.png';
 
 import { ImageVariant } from "@/components/atoms";
 import { Brand } from "@/components/molecules";
@@ -30,7 +31,7 @@ import { useAuthStore } from "@/store/auth";
 const genders = ["Pria", "Wanita"];
 
 function Profile({ navigation }) {
-    const { data: authData, removeAuthToken } = useAuthStore()
+    const { data: authData, setAuthToken, removeAuthToken } = useAuthStore()
     const [email, onChangeEmail] = useState("");
     const [password, onChangePassword] = useState("");
     const {
@@ -78,23 +79,23 @@ function Profile({ navigation }) {
                         layout.justifyCenter,
                         layout.itemsCenter,
                         gutters.marginTop_80,
-                        { gap: 40 }
+                        { gap: 30, width: "100%" }
                     ]}
                 >
-                    <Text style={[fonts.size_40, fonts.gray800, fonts.bold]}>
-                        Profile
+                    <ImageVariant source={Logo} style={{ width: 150, height: 150, borderRadius: 20 }} />
+                    <Text style={[fonts.size_16, fonts.gray800, fonts.bold, { color: "#AE2929" }]}>
+                        ubah photo
                     </Text>
-                    <Text style={[fonts.size_32, fonts.gray800, fonts.bold]}>
-                        {authData?.name || '-'}
-                    </Text>
-                    <Text style={[fonts.size_32, fonts.gray800, fonts.bold]}>
-                        {authData?.email || '-'}
-                    </Text>
-
-                    <Button
-                        title="Logout"
-                        onPress={() => removeAuthToken()}
-                    />
+                    <View style={{ borderWidth: 1, borderColor: "gray", backgroundColor: "lightgray", width: "100%", marginHorizontal: 8 }}>
+                        <Text style={[fonts.alignCenter, fonts.size_24, fonts.gray800, fonts.bold]}>
+                            {authData?.name || '-'}
+                        </Text>
+                    </View>
+                    <View style={{ borderWidth: 1, borderColor: "gray", backgroundColor: "lightgray", width: "100%", marginHorizontal: 8 }}>
+                        <Text style={[fonts.alignCenter, fonts.size_24, fonts.gray800, fonts.bold]}>
+                            {authData?.email || '-'}
+                        </Text>
+                    </View>
                 </View>
             </ScrollView>
         </SafeScreen>

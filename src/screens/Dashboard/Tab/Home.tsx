@@ -74,8 +74,8 @@ function Home({ navigation }) {
             <View style={{
                 display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginVertical: 4
             }}>
-                {categories.map((c) => {
-                    return <View style={{ paddingHorizontal: 8, paddingVertical: 2, backgroundColor: '#D9D9D9' }}><Text style={{ fontWeight: '700', color: '#000000' }}>{c}</Text></View>
+                {categories.map((c, idx) => {
+                    return <View key={`category-${idx}`} style={{ paddingHorizontal: 8, paddingVertical: 2, backgroundColor: '#D9D9D9' }}><Text style={{ fontWeight: '700', color: '#000000' }}>{c}</Text></View>
                 })
                 }
             </View>

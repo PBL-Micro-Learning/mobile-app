@@ -27,9 +27,11 @@ import TranslateImage from "@/theme/assets/images/translate.png";
 import SelectDropdown from "react-native-select-dropdown";
 import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
+import ClassList from "@/components/class/ClassList";
 const genders = ["Pria", "Wanita"];
 
 function Class({ navigation }) {
+    const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
     const { token, setAuthToken } = useAuthStore()
     const [email, onChangeEmail] = useState("");
     const [password, onChangePassword] = useState("");
@@ -44,53 +46,32 @@ function Class({ navigation }) {
         backgrounds,
     } = useTheme();
 
-    const [currentId, setCurrentId] = useState(-1);
 
-    const { isSuccess, data, isFetching } = useQuery({
-        queryKey: ["example", currentId],
-        queryFn: () => {
-            return fetchOne(currentId);
-        },
-        enabled: currentId >= 0,
-    });
-
-    const onPressLogin = async () => {
-        const response = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
+    const getCourses = async () => {
+        const response = await fetch(`${API_URL}/courses`, {
+            method: 'GET',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                email,
-                password
-            }),
         })
         const json = await response.json()
-        console.log('login', json.data.user.token)
-        if (response.status === 200) {
-            Alert.alert('Login Success!')
-            setAuthToken(json.data.user.token)
-            navigation.navigate('Dashboard')
-        }
-        if (response.status === 400) Alert.alert('Login Failed!')
+        console.log('login', json)
+        // if (response.status === 200) {
+        //     Alert.alert('Login Success!')
+        //     setAuthToken(json.data.user.token)
+        //     navigation.navigate('Dashboard')
+        // }
+        // if (response.status === 400) Alert.alert('Login Failed!')
     };
+    useEffect(() => {
+        getCourses()
+    }, [])
 
     return (
         <SafeScreen>
-            <ScrollView>
-                <View
-                    style={[
-                        layout.justifyCenter,
-                        layout.itemsCenter,
-                        gutters.marginTop_80,
-                    ]}
-                >
-                    <Text style={[fonts.size_40, fonts.gray800, fonts.bold]}>
-                        Class
-                    </Text>
-                </View>
-            </ScrollView>
+            <Text style={{ color: '#AE2929', fontWeight: '700', fontSize: 28, margin: 10 }}>Khursus Saya</Text>
+            <ClassList />
         </SafeScreen>
     );
 }
