@@ -9,7 +9,7 @@ import {
 	TextInput,
 	Button,
 } from "react-native";
-import Logo from '@/theme/assets/images/microlearning.png';
+import Logo from '@/theme/assets/images/1.png';
 
 import { ImageVariant } from "@/components/atoms";
 import { SafeScreen } from "@/components/template";

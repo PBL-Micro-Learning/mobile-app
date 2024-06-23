@@ -1,6 +1,6 @@
 import { View, DimensionValue } from 'react-native';
 
-import Logo from '@/theme/assets/images/microlearning.png';
+import Logo from '@/theme/assets/images/1.png';
 
 import { ImageVariant } from '@/components/atoms';
 import { useTheme } from '@/theme';

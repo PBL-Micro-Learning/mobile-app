@@ -28,11 +28,13 @@ import SelectDropdown from "react-native-select-dropdown";
 import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
 import HomeList from "@/components/home/HomeList";
+import { useIsFocused } from "@react-navigation/native";
 const genders = ["Pria", "Wanita"];
 
 function Home({ navigation }) {
     const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
-    const { token, setAuthToken } = useAuthStore()
+    const isFocused = useIsFocused()
+    const { token, setAuthToken, data } = useAuthStore()
     const [email, onChangeEmail] = useState("");
     const [password, onChangePassword] = useState("");
     const {
@@ -47,26 +49,31 @@ function Home({ navigation }) {
     } = useTheme();
 
 
-    const getCourses = async () => {
-        const response = await fetch(`${API_URL}/courses`, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        })
-        const json = await response.json()
-        console.log('login', json)
-        // if (response.status === 200) {
-        //     Alert.alert('Login Success!')
-        //     setAuthToken(json.data.user.token)
-        //     navigation.navigate('Dashboard')
-        // }
-        // if (response.status === 400) Alert.alert('Login Failed!')
+    const getLessons = async () => {
+        try {
+            console.log('===> get lesson triggered')
+            const response = await fetch(`${API_URL}/lessons`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            })
+            const json = await response.json()
+            console.log('getLessons', JSON.stringify(json))
+            if (response.status === 200) {
+                Alert.alert('Get lessons success')
+            }
+            if (response.status === 400) Alert.alert('Get Lessons Failed!')
+        } catch (error) {
+            Alert.alert('Get Lessons Failed!')
+        }
     };
     useEffect(() => {
-        getCourses()
-    }, [])
+        console.log('home isFocused', isFocused)
+        getLessons()
+        console.log('auth data', data)
+    }, [isFocused])
 
     return (
         <SafeScreen>

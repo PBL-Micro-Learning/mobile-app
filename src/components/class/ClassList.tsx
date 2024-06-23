@@ -1,9 +1,17 @@
 import React from 'react'
 import { FlatList } from 'react-native-gesture-handler'
 import { ImageVariant } from '../atoms'
-import Logo from '@/theme/assets/images/microlearning.png';
+import Logo from '@/theme/assets/images/1.png';
 import DropShadow from "react-native-drop-shadow";
 import { Text, View } from 'react-native';
+
+interface ClassProps {
+    courseData: ICourseData[]
+}
+interface ICourseData {
+    name: string
+    description: string
+}
 
 interface IData {
     name: string
@@ -11,7 +19,7 @@ interface IData {
     time: string
     progress: number
 }
-interface IClassListItem extends IData {
+interface IClassListItem extends ICourseData {
     index: number
 }
 
@@ -61,20 +69,21 @@ const ClassListItem = (data: IClassListItem) => {
                     flex: 1,
                 }}>
                     <Text style={{ fontWeight: '700', fontSize: 18 }}>{data.name}</Text>
-                    <Text style={{ fontWeight: '400', fontSize: 16 }}>{data.teacherName}</Text>
-                    <View style={{ display: 'flex', justifyContent: 'center', width: `${data.progress}%`, backgroundColor: "green", height: 20 }}>
+                    <Text style={{ fontWeight: '400', fontSize: 16 }}>{data.description}</Text>
+                    {/* <Text style={{ fontWeight: '400', fontSize: 16 }}>{data.teacherName}</Text> */}
+                    {/* <View style={{ display: 'flex', justifyContent: 'center', width: `${data.progress}%`, backgroundColor: "green", height: 20 }}>
                         <Text style={{ fontWeight: '700', fontSize: 12, marginLeft: 4, color: 'white' }}>{data.progress}%</Text>
-                    </View>
+                    </View> */}
 
                 </View>
             </View>
         </DropShadow>
     )
 }
-function ClassList() {
+function ClassList({ courseData }: ClassProps) {
     return (
         <FlatList
-            data={dummyData}
+            data={courseData}
             keyExtractor={(item, index) => "List-" + index}
             renderItem={({ item, index }) => <ClassListItem index={index} {...item} />}
 

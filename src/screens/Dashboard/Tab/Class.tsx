@@ -28,11 +28,16 @@ import SelectDropdown from "react-native-select-dropdown";
 import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
 import ClassList from "@/components/class/ClassList";
+import { useIsFocused } from "@react-navigation/native";
+import CreateClass from "@/components/class/CreateClass";
 const genders = ["Pria", "Wanita"];
 
 function Class({ navigation }) {
     const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
+    const isFocused = useIsFocused()
     const { token, setAuthToken } = useAuthStore()
+    const [mode, setMode] = useState<"create" | "view">('view');
+    const [courses, setCourses] = useState([]);
     const [email, onChangeEmail] = useState("");
     const [password, onChangePassword] = useState("");
     const {
@@ -48,30 +53,78 @@ function Class({ navigation }) {
 
 
     const getCourses = async () => {
-        const response = await fetch(`${API_URL}/courses`, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        })
-        const json = await response.json()
-        console.log('login', json)
-        // if (response.status === 200) {
-        //     Alert.alert('Login Success!')
-        //     setAuthToken(json.data.user.token)
-        //     navigation.navigate('Dashboard')
-        // }
-        // if (response.status === 400) Alert.alert('Login Failed!')
+        try {
+            const response = await fetch(`${API_URL}/courses`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            })
+            const json = await response.json()
+            console.log('my courses', JSON.stringify(json))
+
+            if (response.status === 200) {
+                setCourses(json.data.courses)
+            }
+            if (response.status === 400) Alert.alert('Get Courses Failed')
+        } catch (error) {
+            // Alert.alert('Get Courses Failed')
+        }
+    };
+    const handleCreateCourse = async () => {
+        try {
+
+            const response = await fetch(`${API_URL}/courses`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name: 'Test Course',
+                    description: 'for testing purpose'
+                })
+            })
+            const json = await response.json()
+            console.log('create course', json)
+            // if (response.status === 200) {
+            //     Alert.alert('Login Success!')
+            //     setAuthToken(json.data.user.token)
+            //     navigation.navigate('Dashboard')
+            // }
+            // if (response.status === 400) Alert.alert('Login Failed!')
+        } catch (error) {
+            console.log('error', error)
+        }
     };
     useEffect(() => {
         getCourses()
-    }, [])
+    }, [isFocused, mode])
 
     return (
         <SafeScreen>
-            <Text style={{ color: '#AE2929', fontWeight: '700', fontSize: 28, margin: 10 }}>Khursus Saya</Text>
-            <ClassList />
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ color: '#AE2929', fontWeight: '700', fontSize: 28, margin: 10 }}>Khursus Saya</Text>
+                <TouchableOpacity
+                    accessibilityRole="button"
+                    onPress={() => {
+                        if (mode === 'view') setMode('create')
+                        if (mode === 'create') setMode('view')
+                    }
+                    }
+                    style={{ flex: 1 }}
+                >
+                    <Text style={{ textAlign: 'right', color: '#AE2929', fontWeight: '700', fontSize: 14, margin: 10 }}>
+                        {mode === 'view' ? 'Buat Kelas' : 'Kembali'}
+                    </Text>
+                </TouchableOpacity>
+            </View>
+            {mode === 'view' ?
+                <ClassList courseData={courses} />
+                : <CreateClass />
+            }
         </SafeScreen>
     );
 }
