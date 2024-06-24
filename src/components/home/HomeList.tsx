@@ -5,13 +5,20 @@ import Logo from '@/theme/assets/images/microlearning.png';
 import DropShadow from "react-native-drop-shadow";
 import { Text, View } from 'react-native';
 
-interface IData {
-    name: string
-    teacherName: string
-    time: string
-    url: string
+interface HomeProps {
+    courseData: ICourseData[]
 }
-interface IHomeListItem extends IData {
+interface ILecturer {
+    id: number
+    name: string
+}
+interface ICourseData {
+    name: string
+    description: string
+    cover_url: string
+    lecturer: ILecturer
+}
+interface IHomeListItem extends ICourseData {
     index: number
 }
 
@@ -54,25 +61,25 @@ const HomeListItem = (data: IHomeListItem) => {
                 borderRadius: 10,
 
             }}>
-                <ImageVariant source={Logo} style={{ width: 90, height: 90, borderRadius: 20 }} />
+                <ImageVariant source={{ uri: data.cover_url }} style={{ width: 90, height: 90, borderRadius: 20 }} />
                 <View style={{
                     display: 'flex',
                     justifyContent: 'space-evenly',
                     flex: 1,
                 }}>
-                    <Text style={{ fontWeight: '700', fontSize: 18 }}>{data.name}</Text>
-                    <Text style={{ fontWeight: '400', fontSize: 16 }}>{data.teacherName}</Text>
-                    <Text style={{ fontWeight: '400', fontSize: 14 }}>{data.time}</Text>
+                    <Text style={{ fontWeight: '700', fontSize: 16 }}>{data.name}</Text>
+                    <Text style={{ fontWeight: '400', fontSize: 12 }}>{data.description}</Text>
+                    <Text style={{ fontWeight: '400', fontSize: 14 }}>{data.lecturer.name}</Text>
 
                 </View>
             </View>
         </DropShadow>
     )
 }
-function HomeList() {
+function HomeList({ courseData }: HomeProps) {
     return (
         <FlatList
-            data={dummyData}
+            data={courseData}
             keyExtractor={(item, index) => "List-" + index}
             renderItem={({ item, index }) => <HomeListItem index={index} {...item} />}
             scrollEnabled={true}

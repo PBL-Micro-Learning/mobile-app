@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
     View,
     ActivityIndicator,
@@ -28,6 +28,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
 import SearchList from "@/components/search/SearchList";
+import useDebounce from "@/theme/hooks/useDebounce";
 const genders = ["Pria", "Wanita"];
 
 const dummyData = [
@@ -49,12 +50,14 @@ const dummyData = [
 
     }
 ]
-function Search({ navigation }) {
+function Search() {
     const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
     const { token, setAuthToken } = useAuthStore()
     const [search, onChangeSearch] = useState("");
-    const [listData, setListData] = useState(dummyData)
+    const [listData, setListData] = useState([])
     const [password, onChangePassword] = useState("");
+    const debouncedValue = useDebounce(search, 500);
+
     const {
         colors,
         variant,
@@ -65,31 +68,48 @@ function Search({ navigation }) {
         components,
         backgrounds,
     } = useTheme();
-    useEffect(() => {
-        const filteredSearch = dummyData.filter(d => d.name.toLowerCase().includes(search.toLowerCase()))
-        console.log('filteredSearch', filteredSearch)
-        setListData(filteredSearch)
-    }, [search])
 
+    const searchCourse = useCallback(async () => {
+        const res = await fetch(`${API_URL}/courses?search=${search}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const json = await res.json();
+        console.log("course search", json);
+        setListData(json.data)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [debouncedValue]);
 
 
     const getCourses = async () => {
-        const response = await fetch(`${API_URL}/courses`, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        })
-        const json = await response.json()
-        console.log('courses', json)
-        // if (response.status === 200) {
-        //     Alert.alert('Login Success!')
-        //     setAuthToken(json.data.user.token)
-        //     navigation.navigate('Dashboard')
-        // }
-        // if (response.status === 400) Alert.alert('Login Failed!')
+        try {
+            const response = await fetch(`${API_URL}/courses`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+            const json = await response.json()
+            console.log('get search courses', json)
+            if (response.status === 200) {
+                // Alert.alert('Login Success!')
+                setListData(json.data)
+            }
+            if (response.status === 400) Alert.alert('get course failed!')
+
+        } catch (error) {
+            Alert.alert('get course failed!')
+        }
     };
+
+    useEffect(() => {
+        searchCourse();
+    }, [debouncedValue, searchCourse]);
+
     useEffect(() => {
         getCourses()
     }, [])

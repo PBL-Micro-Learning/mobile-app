@@ -58,6 +58,7 @@ function Class({ navigation }) {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             })
@@ -65,7 +66,7 @@ function Class({ navigation }) {
             console.log('my courses', JSON.stringify(json))
 
             if (response.status === 200) {
-                setCourses(json.data.courses)
+                setCourses(json.data)
             }
             if (response.status === 400) Alert.alert('Get Courses Failed')
         } catch (error) {

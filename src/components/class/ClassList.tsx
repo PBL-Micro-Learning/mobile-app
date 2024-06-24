@@ -1,16 +1,21 @@
 import React from 'react'
 import { FlatList } from 'react-native-gesture-handler'
 import { ImageVariant } from '../atoms'
-import Logo from '@/theme/assets/images/1.png';
 import DropShadow from "react-native-drop-shadow";
 import { Text, View } from 'react-native';
 
 interface ClassProps {
     courseData: ICourseData[]
 }
+interface ILecturer {
+    id: number
+    name: string
+}
 interface ICourseData {
     name: string
     description: string
+    cover_url: string
+    lecturer: ILecturer
 }
 
 interface IData {
@@ -62,18 +67,19 @@ const ClassListItem = (data: IClassListItem) => {
                 borderRadius: 10,
 
             }}>
-                <ImageVariant source={Logo} style={{ width: 90, height: 90, borderRadius: 20 }} />
+                <ImageVariant source={{ uri: data.cover_url }} style={{ width: 90, height: 90, borderRadius: 20 }} />
                 <View style={{
                     display: 'flex',
                     justifyContent: 'space-evenly',
                     flex: 1,
                 }}>
-                    <Text style={{ fontWeight: '700', fontSize: 18 }}>{data.name}</Text>
-                    <Text style={{ fontWeight: '400', fontSize: 16 }}>{data.description}</Text>
-                    {/* <Text style={{ fontWeight: '400', fontSize: 16 }}>{data.teacherName}</Text> */}
-                    {/* <View style={{ display: 'flex', justifyContent: 'center', width: `${data.progress}%`, backgroundColor: "green", height: 20 }}>
-                        <Text style={{ fontWeight: '700', fontSize: 12, marginLeft: 4, color: 'white' }}>{data.progress}%</Text>
-                    </View> */}
+                    <Text style={{ fontWeight: '700', fontSize: 16 }}>{data.name}</Text>
+                    <Text style={{ fontWeight: '400', fontSize: 12 }}>{data.description}</Text>
+                    <Text style={{ fontWeight: '400', fontSize: 14 }}>{data.lecturer.name}</Text>
+                    {/* <View style={{ display: 'flex', justifyContent: 'center', width: `${data.progress}%`, backgroundColor: "green", height: 20 }}> */}
+                    <View style={{ display: 'flex', justifyContent: 'center', width: `0%`, backgroundColor: "green", height: 20 }}>
+                        <Text style={{ fontWeight: '700', fontSize: 12, marginLeft: 4, color: 'white' }}>0%</Text>
+                    </View>
 
                 </View>
             </View>
@@ -81,6 +87,7 @@ const ClassListItem = (data: IClassListItem) => {
     )
 }
 function ClassList({ courseData }: ClassProps) {
+    console.log('courseData', courseData)
     return (
         <FlatList
             data={courseData}

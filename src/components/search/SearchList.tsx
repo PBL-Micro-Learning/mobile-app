@@ -5,13 +5,21 @@ import Logo from '@/theme/assets/images/microlearning.png';
 import DropShadow from "react-native-drop-shadow";
 import { Text, View } from 'react-native';
 
-interface IData {
-    name: string
-    teacherName: string
-    time: string
-    progress: number
+interface SearchProps {
+    search: string,
+    data: ICourseData[]
 }
-interface ISearchListItem extends IData {
+interface ILecturer {
+    id: number
+    name: string
+}
+interface ICourseData {
+    name: string
+    description: string
+    cover_url: string
+    lecturer: ILecturer
+}
+interface ISearchListItem extends ICourseData {
     index: number
 }
 
@@ -35,15 +43,15 @@ const SearchListItem = (data: ISearchListItem) => {
                 borderRadius: 10,
 
             }}>
-                <ImageVariant source={Logo} style={{ width: 90, height: 90, borderRadius: 20 }} />
+                <ImageVariant source={{ uri: data.cover_url }} style={{ width: 90, height: 90, borderRadius: 20 }} />
                 <View style={{
                     display: 'flex',
                     justifyContent: 'space-evenly',
                     flex: 1,
                 }}>
-                    <Text style={{ fontWeight: '700', fontSize: 18 }}>{data.name}</Text>
-                    <Text style={{ fontWeight: '400', fontSize: 16 }}>{data.teacherName}</Text>
-                    <Text style={{ fontWeight: '400', fontSize: 16 }}>{data.time}</Text>
+                    <Text style={{ fontWeight: '700', fontSize: 16 }}>{data.name}</Text>
+                    <Text style={{ fontWeight: '400', fontSize: 12 }}>{data.description}</Text>
+                    <Text style={{ fontWeight: '400', fontSize: 14 }}>{data.lecturer.name}</Text>
                     {/* <View style={{ display: 'flex', justifyContent: 'center', width: `${data.progress}%`, backgroundColor: "green", height: 20 }}>
                         <Text style={{ fontWeight: '700', fontSize: 12, marginLeft: 4, color: 'white' }}>{data.progress}%</Text>
                     </View> */}
@@ -52,10 +60,6 @@ const SearchListItem = (data: ISearchListItem) => {
             </View>
         </DropShadow>
     )
-}
-type SearchProps = {
-    search: string,
-    data: IData[]
 }
 function SearchList({ search, data }: SearchProps) {
     return (

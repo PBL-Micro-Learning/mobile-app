@@ -67,11 +67,11 @@ function Login({ navigation }) {
 			}),
 		})
 		const json = await response.json()
-		console.log('login', json.data.user.token)
+		console.log('login', json.data)
 		if (response.status === 200) {
 			Alert.alert('Login Success!')
-			setAuthToken(json.data.user.token)
-			setAuthData(json.data.user)
+			setAuthToken(json.data.token)
+			setAuthData(json.data)
 			navigation.navigate('Dashboard')
 		}
 		if (response.status === 400) Alert.alert('Login Failed!')

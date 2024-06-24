@@ -31,9 +31,10 @@ import HomeList from "@/components/home/HomeList";
 import { useIsFocused } from "@react-navigation/native";
 const genders = ["Pria", "Wanita"];
 
-function Home({ navigation }) {
+function Home() {
     const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
     const isFocused = useIsFocused()
+    const [courses, setCourses] = useState([]);
     const { token, setAuthToken, data } = useAuthStore()
     const [email, onChangeEmail] = useState("");
     const [password, onChangePassword] = useState("");
@@ -49,6 +50,27 @@ function Home({ navigation }) {
     } = useTheme();
 
 
+    const getCourses = async () => {
+        try {
+            const response = await fetch(`${API_URL}/courses`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+            const json = await response.json()
+            console.log('my courses', JSON.stringify(json))
+
+            if (response.status === 200) {
+                setCourses(json.data)
+            }
+            if (response.status === 400) Alert.alert('Get Courses Failed')
+        } catch (error) {
+            // Alert.alert('Get Courses Failed')
+        }
+    };
     const getLessons = async () => {
         try {
             console.log('===> get lesson triggered')
@@ -71,7 +93,7 @@ function Home({ navigation }) {
     };
     useEffect(() => {
         console.log('home isFocused', isFocused)
-        getLessons()
+        getCourses()
         console.log('auth data', data)
     }, [isFocused])
 
@@ -86,7 +108,7 @@ function Home({ navigation }) {
                 })
                 }
             </View>
-            <HomeList />
+            <HomeList courseData={courses} />
         </SafeScreen>
     );
 }

@@ -12,7 +12,7 @@ import {
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import Logo from '@/theme/assets/images/microlearning.png';
+import Logo from '@/theme/assets/images/1.png';
 
 import { ImageVariant } from "@/components/atoms";
 import { Brand } from "@/components/molecules";
