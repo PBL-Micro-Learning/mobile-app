@@ -32,7 +32,7 @@ import { useIsFocused } from "@react-navigation/native";
 import CreateClass from "@/components/class/CreateClass";
 const genders = ["Pria", "Wanita"];
 
-function Class({ navigation }) {
+function Class() {
     const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
     const isFocused = useIsFocused()
     const { token, setAuthToken } = useAuthStore()

@@ -12,11 +12,17 @@ interface ILecturer {
     id: number
     name: string
 }
-interface ICourseData {
+export interface ICourseData {
     name: string
     description: string
     cover_url: string
     lecturer: ILecturer
+    is_enrolled: true,
+    progress: {
+        total_contents: 0,
+        watched_contents: 0,
+        percentage: 0
+    }
 }
 interface IHomeListItem extends ICourseData {
     index: number
@@ -77,9 +83,10 @@ const HomeListItem = (data: IHomeListItem) => {
     )
 }
 function HomeList({ courseData }: HomeProps) {
+    const enrolledCourse = courseData.filter(c => c.is_enrolled === true)
     return (
         <FlatList
-            data={courseData}
+            data={enrolledCourse}
             keyExtractor={(item, index) => "List-" + index}
             renderItem={({ item, index }) => <HomeListItem index={index} {...item} />}
             scrollEnabled={true}
