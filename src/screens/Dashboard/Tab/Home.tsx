@@ -29,14 +29,18 @@ import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
 import HomeList from "@/components/home/HomeList";
 import { useIsFocused } from "@react-navigation/native";
+import HomeListDetail from "@/components/home/HomeListDetail";
+import { useCourseStore } from "@/store/course";
+import LessonDetail from "@/components/home/LessonDetail";
+import ContentDetail from "@/components/home/ContentDetail";
 const genders = ["Pria", "Wanita"];
 
 function Home() {
     const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
     const isFocused = useIsFocused()
     const [courses, setCourses] = useState([]);
+    const { mode } = useCourseStore()
     const { token, setAuthToken, data } = useAuthStore()
-    const [email, onChangeEmail] = useState("");
     const [password, onChangePassword] = useState("");
     const {
         colors,
@@ -71,44 +75,42 @@ function Home() {
             // Alert.alert('Get Courses Failed')
         }
     };
-    const getLessons = async () => {
-        try {
-            console.log('===> get lesson triggered')
-            const response = await fetch(`${API_URL}/lessons`, {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            })
-            const json = await response.json()
-            console.log('getLessons', JSON.stringify(json))
-            if (response.status === 200) {
-                Alert.alert('Get lessons success')
-            }
-            if (response.status === 400) Alert.alert('Get Lessons Failed!')
-        } catch (error) {
-            Alert.alert('Get Lessons Failed!')
-        }
-    };
+
     useEffect(() => {
         console.log('home isFocused', isFocused)
         getCourses()
         console.log('auth data', data)
     }, [isFocused])
 
+    const ShowScreen = () => {
+
+        if (mode === 'LIST') {
+            return <HomeList courseData={courses} />
+        }
+        if (mode === 'DETAIL') {
+            return <HomeListDetail />
+        }
+        if (mode === 'LESSONDETAIL') {
+            return <LessonDetail />
+        }
+        if (mode === 'CONTENTDETAIL') {
+            return <ContentDetail />
+        }
+
+    }
+
     return (
         <SafeScreen>
             <Text style={{ color: '#AE2929', fontWeight: '700', fontSize: 28 }}>Beranda</Text>
-            <View style={{
+            {/* <View style={{
                 display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginVertical: 4
             }}>
                 {categories.map((c, idx) => {
                     return <View key={`category-${idx}`} style={{ paddingHorizontal: 8, paddingVertical: 2, backgroundColor: '#D9D9D9' }}><Text style={{ fontWeight: '700', color: '#000000' }}>{c}</Text></View>
                 })
                 }
-            </View>
-            <HomeList courseData={courses} />
+            </View> */}
+            <ShowScreen />
         </SafeScreen>
     );
 }

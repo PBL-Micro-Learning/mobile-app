@@ -10,6 +10,9 @@ import {
 	Button,
 } from "react-native";
 import Logo from '@/theme/assets/images/1.png';
+// import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+
 
 import { ImageVariant } from "@/components/atoms";
 import { SafeScreen } from "@/components/template";
@@ -31,7 +34,7 @@ import Class from "./Tab/Class";
 
 const Tab = createBottomTabNavigator();
 
-function Dashboard({ navigation }) {
+function Dashboard() {
 	const { token, removeAuthToken } = useAuthStore()
 	const [email, onChangeEmail] = useState("");
 	const [password, onChangePassword] = useState("");
@@ -46,61 +49,6 @@ function Dashboard({ navigation }) {
 		backgrounds,
 	} = useTheme();
 
-
-
-	function TabBar({ state, descriptors, navigation }) {
-		return (
-			<View style={{ flexDirection: 'row' }}>
-				{state.routes.map((route, index) => {
-					const { options } = descriptors[route.key];
-					const label =
-						options.tabBarLabel !== undefined
-							? options.tabBarLabel
-							: options.title !== undefined
-								? options.title
-								: route.name;
-
-					const isFocused = state.index === index;
-
-					const onPress = () => {
-						const event = navigation.emit({
-							type: 'tabPress',
-							target: route.key,
-							canPreventDefault: true,
-						});
-
-						if (!isFocused && !event.defaultPrevented) {
-							navigation.navigate(route.name, route.params);
-						}
-					};
-
-					const onLongPress = () => {
-						navigation.emit({
-							type: 'tabLongPress',
-							target: route.key,
-						});
-					};
-
-					return (
-						<TouchableOpacity
-							accessibilityRole="button"
-							accessibilityState={isFocused ? { selected: true } : {}}
-							accessibilityLabel={options.tabBarAccessibilityLabel}
-							testID={options.tabBarTestID}
-							onPress={onPress}
-							onLongPress={onLongPress}
-							style={{ flex: 1 }}
-						>
-							<Text style={{ color: isFocused ? '#673ab7' : '#222' }}>
-								{label}
-							</Text>
-						</TouchableOpacity>
-					);
-				})}
-			</View>
-		);
-	}
-
 	const HeaderImage = () => {
 		return (
 			(
@@ -108,6 +56,7 @@ function Dashboard({ navigation }) {
 			)
 		)
 	}
+
 	const Logout = () => {
 		return (
 			(
@@ -123,9 +72,9 @@ function Dashboard({ navigation }) {
 		<SafeScreen>
 			<Tab.Navigator
 				screenOptions={{
-					tabBarLabelStyle: {
-						bottom: 10,
-					},
+					// tabBarLabelStyle: {
+					// 	bottom: 10,
+					// },
 					tabBarStyle: {
 						shadowRadius: 2.0,
 						elevation: 2,
@@ -136,12 +85,18 @@ function Dashboard({ navigation }) {
 						},
 						shadowColor: '#000',
 					},
-					tabBarIconStyle: {
-						top: 10,
-					},
+					// tabBarIconStyle: {
+					// 	top: 10,
+					// },
 					headerShown: true,
 					tabBarActiveTintColor: colors.red500,
 					tabBarInactiveTintColor: colors.gray400,
+					tabBarIcon: ({ color, size }) => {
+						console.log('color, size', color, size)
+						return (
+							<View style={{ padding: 10, borderRadius: 10, backgroundColor: color }}></View>
+						)
+					},
 				}}
 			>
 				<Tab.Screen name="Home" component={Home}
