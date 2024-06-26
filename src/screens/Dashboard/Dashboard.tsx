@@ -62,7 +62,7 @@ function Dashboard() {
 			(
 				<Text
 					onPress={() => removeAuthToken()}
-					style={{ color: "#AE2929", fontSize: 20, fontWeight: '700' }}
+					style={{ color: "#004aad", fontSize: 20, fontWeight: '700' }}
 				>Logout</Text>
 			)
 		)
@@ -89,7 +89,7 @@ function Dashboard() {
 					// 	top: 10,
 					// },
 					headerShown: true,
-					tabBarActiveTintColor: colors.red500,
+					tabBarActiveTintColor: '#004aad',
 					tabBarInactiveTintColor: colors.gray400,
 					tabBarIcon: ({ color, size }) => {
 						console.log('color, size', color, size)

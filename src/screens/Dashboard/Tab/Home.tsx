@@ -101,7 +101,7 @@ function Home() {
 
     return (
         <SafeScreen>
-            <Text style={{ color: '#AE2929', fontWeight: '700', fontSize: 28 }}>Beranda</Text>
+            <Text style={{ color: '#004aad', fontWeight: '700', fontSize: 28 }}>Beranda</Text>
             {/* <View style={{
                 display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginVertical: 4
             }}>

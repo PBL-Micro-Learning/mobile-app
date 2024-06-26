@@ -26,6 +26,8 @@ export interface IContent {
     title: string,
     body: string,
     video_url: string
+    likes: boolean
+    likes_count: number
     comments: IComment[]
 }
 

@@ -83,7 +83,7 @@ function Profile({ navigation }) {
                     ]}
                 >
                     <ImageVariant source={Logo} style={{ width: 150, height: 150, borderRadius: 20 }} />
-                    <Text style={[fonts.size_16, fonts.gray800, fonts.bold, { color: "#AE2929" }]}>
+                    <Text style={[fonts.size_16, fonts.gray800, fonts.bold, { color: "#004aad" }]}>
                         ubah photo
                     </Text>
                     <View style={{ borderWidth: 1, borderColor: "gray", backgroundColor: "lightgray", width: "100%", marginHorizontal: 8 }}>

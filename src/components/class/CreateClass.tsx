@@ -102,7 +102,7 @@ function CreateClass() {
                         <Button
                             onPress={onSubmitCreateClass}
                             title="Buat Kelas"
-                            color={'#AE2929'}
+                            color={'#004aad'}
                             accessibilityLabel="Buat Kelas"
                         />
                     </View>

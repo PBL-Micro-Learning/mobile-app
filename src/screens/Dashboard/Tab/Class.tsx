@@ -107,7 +107,7 @@ function Class() {
     return (
         <SafeScreen>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ color: '#AE2929', fontWeight: '700', fontSize: 28, margin: 10 }}>Khursus Saya</Text>
+                <Text style={{ color: '#004aad', fontWeight: '700', fontSize: 28, margin: 10 }}>Khursus Saya</Text>
                 <TouchableOpacity
                     accessibilityRole="button"
                     onPress={() => {
@@ -117,7 +117,7 @@ function Class() {
                     }
                     style={{ flex: 1 }}
                 >
-                    <Text style={{ textAlign: 'right', color: '#AE2929', fontWeight: '700', fontSize: 14, margin: 10 }}>
+                    <Text style={{ textAlign: 'right', color: '#004aad', fontWeight: '700', fontSize: 14, margin: 10 }}>
                         {mode === 'view' ? 'Buat Kelas' : 'Kembali'}
                     </Text>
                 </TouchableOpacity>
