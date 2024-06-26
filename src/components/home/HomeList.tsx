@@ -123,7 +123,11 @@ const HomeListItem = (data: IHomeListItem) => {
                         <Text style={{ fontWeight: '700', fontSize: 16 }}>{data.name}</Text>
                         <Text style={{ fontWeight: '400', fontSize: 12 }}>{data.description}</Text>
                         <Text style={{ fontWeight: '400', fontSize: 14 }}>{data.lecturer.name}</Text>
-
+                        {/* {data?.progress?.percentage &&
+                            <View style={{ display: 'flex', justifyContent: 'center', width: `${data.progress.percentage}%`, backgroundColor: "green", height: 20 }}>
+                                <Text style={{ fontWeight: '700', fontSize: 12, marginLeft: 4, color: 'white' }}>{data.progress.percentage}%</Text>
+                            </View>
+                        } */}
                     </View>
                 </View>
             </TouchableOpacity>
@@ -131,7 +135,10 @@ const HomeListItem = (data: IHomeListItem) => {
     )
 }
 function HomeList({ courseData }: HomeProps) {
-    const enrolledCourse = courseData.filter(c => c.is_enrolled === true)
+    const { data } = useAuthStore()
+    let enrolledCourse: ArrayLike<any> | null | undefined = []
+    if (data.role === 'STUDENT') enrolledCourse = courseData.filter(c => c.is_enrolled === true)
+    if (data.role === 'LECTURER') enrolledCourse = courseData.filter(c => c.lecturer.id === data.id)
     return (
         <FlatList
             data={enrolledCourse}

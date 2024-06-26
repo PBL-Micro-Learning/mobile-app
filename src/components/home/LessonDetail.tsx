@@ -51,7 +51,9 @@ function LessonDetail() {
 
             <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
                 <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Materi</Text>
-                <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {lesson.progress.total_contents}</Text>
+                {lesson?.progress?.total_contents &&
+                    <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {lesson.progress.total_contents}</Text>
+                }
                 {lesson?.contents?.map((c, lIdx) => {
                     return <View key={`lesson-${lIdx}`} style={{ paddingVertical: 20, paddingHorizontal: 10, width: '100%', borderWidth: 1, borderColor: 'black' }}>
                         <TouchableOpacity onPress={() => {

@@ -15,25 +15,6 @@ interface IClassListItem extends ICourseData {
     index: number
 }
 
-const dummyData = [
-    {
-        name: 'Dasar Pemrograman Javascript: INTRO',
-        teacherName: 'Sandhika Galih',
-        time: '7:53 Min',
-        progress: 100
-    }, {
-        name: 'Apa Itu Javascript?',
-        teacherName: 'Sandhika Galih',
-        time: '9:51 Min',
-        progress: 50
-    }, {
-        name: 'Bahasa Pemrograman',
-        teacherName: 'Sandhika Galih',
-        time: '11:43 Min',
-        progress: 30
-
-    }
-]
 const ClassListItem = ({ data, getCourses }: { data: ICourseData, getCourses: () => void }) => {
     console.log('data', data)
     const { token } = useAuthStore()
@@ -118,9 +99,6 @@ const ClassListItem = ({ data, getCourses }: { data: ICourseData, getCourses: ()
                         <Text style={{ fontWeight: '400', fontSize: 12 }}>{data.description}</Text>
                         <Text style={{ fontWeight: '400', fontSize: 14 }}>{data.lecturer.name}</Text>
                         {/* <View style={{ display: 'flex', justifyContent: 'center', width: `${data.progress}%`, backgroundColor: "green", height: 20 }}> */}
-                        <View style={{ display: 'flex', justifyContent: 'center', width: `0%`, backgroundColor: "green", height: 20 }}>
-                            <Text style={{ fontWeight: '700', fontSize: 12, marginLeft: 4, color: 'white' }}>0%</Text>
-                        </View>
 
                     </View>
                 </View>

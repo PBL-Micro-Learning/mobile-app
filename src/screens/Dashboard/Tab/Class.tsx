@@ -35,7 +35,7 @@ const genders = ["Pria", "Wanita"];
 function Class() {
     const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
     const isFocused = useIsFocused()
-    const { token, setAuthToken } = useAuthStore()
+    const { token, data } = useAuthStore()
     const [mode, setMode] = useState<"create" | "view">('view');
     const [courses, setCourses] = useState([]);
     const [email, onChangeEmail] = useState("");
@@ -63,7 +63,7 @@ function Class() {
                 },
             })
             const json = await response.json()
-            console.log('my courses', JSON.stringify(json))
+            // console.log('my courses', JSON.stringify(json))
 
             if (response.status === 200) {
                 setCourses(json.data)
@@ -101,26 +101,29 @@ function Class() {
         }
     };
     useEffect(() => {
+        console.log('auth data', data)
         getCourses()
     }, [isFocused, mode])
 
     return (
         <SafeScreen>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ color: '#004aad', fontWeight: '700', fontSize: 28, margin: 10 }}>Khursus Saya</Text>
-                <TouchableOpacity
-                    accessibilityRole="button"
-                    onPress={() => {
-                        if (mode === 'view') setMode('create')
-                        if (mode === 'create') setMode('view')
-                    }
-                    }
-                    style={{ flex: 1 }}
-                >
-                    <Text style={{ textAlign: 'right', color: '#004aad', fontWeight: '700', fontSize: 14, margin: 10 }}>
-                        {mode === 'view' ? 'Buat Kelas' : 'Kembali'}
-                    </Text>
-                </TouchableOpacity>
+                <Text style={{ color: '#004aad', fontWeight: '700', fontSize: 28, margin: 10 }}>Mata Kuliah</Text>
+                {(data.role === 'LECTURER' || data.role === 'ADMIN') &&
+                    <TouchableOpacity
+                        accessibilityRole="button"
+                        onPress={() => {
+                            if (mode === 'view') setMode('create')
+                            if (mode === 'create') setMode('view')
+                        }
+                        }
+                        style={{ flex: 1 }}
+                    >
+                        <Text style={{ textAlign: 'right', color: '#004aad', fontWeight: '700', fontSize: 14, margin: 10 }}>
+                            {mode === 'view' ? 'Buat Kelas' : 'Kembali'}
+                        </Text>
+                    </TouchableOpacity>
+                }
             </View>
             {mode === 'view' ?
                 <ClassList courseData={courses} getCourses={getCourses} />

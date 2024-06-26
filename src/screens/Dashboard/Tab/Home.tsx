@@ -39,7 +39,7 @@ function Home() {
     const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
     const isFocused = useIsFocused()
     const [courses, setCourses] = useState([]);
-    const { mode } = useCourseStore()
+    const { mode, setMode } = useCourseStore()
     const { token, setAuthToken, data } = useAuthStore()
     const [password, onChangePassword] = useState("");
     const {
@@ -79,6 +79,7 @@ function Home() {
     useEffect(() => {
         console.log('home isFocused', isFocused)
         getCourses()
+        setMode('LIST')
         console.log('auth data', data)
     }, [isFocused])
 

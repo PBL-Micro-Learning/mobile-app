@@ -8,10 +8,11 @@ import { useCourseStore } from '@/store/course';
 import { API_URL } from '@/const';
 import { useAuthStore } from '@/store/auth';
 import { ICourseData } from './HomeList';
+import CreateLesson from './CreateLesson';
 
 function HomeListDetail() {
     const { course }: { course: ICourseData } = useCourseStore()
-    const { token } = useAuthStore()
+    const { token, data } = useAuthStore()
     console.log('course detail', course)
 
 
@@ -45,7 +46,9 @@ function HomeListDetail() {
             </View>
             <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
                 <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Materi</Text>
-                <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {course.progress.total_contents}</Text>
+                {course?.progress?.total_contents &&
+                    <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {course.progress.total_contents}</Text>
+                }
                 {course?.lessons?.map((l, lIdx) => {
                     return <View key={`lesson-${lIdx}`} style={{ paddingVertical: 20, paddingHorizontal: 10, width: '100%', borderWidth: 1, borderColor: 'black' }}>
                         <TouchableOpacity onPress={() => {
@@ -54,13 +57,16 @@ function HomeListDetail() {
                         }}>
                             <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{lIdx + 1}. {l.title}</Text>
                             <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 2 }}>{l.description}</Text>
-                            <View style={{ display: 'flex', justifyContent: 'center', width: `${l.progress.percentage}%`, backgroundColor: "green", height: 20 }}>
-                                <Text style={{ fontWeight: '700', fontSize: 12, marginLeft: 4, color: 'white' }}>{l.progress.percentage}%</Text>
-                            </View>
+                            {/* {l?.progress?.percentage &&
+                                <View style={{ display: 'flex', justifyContent: 'center', width: `${l.progress.percentage}%`, backgroundColor: "green", height: 20 }}>
+                                    <Text style={{ fontWeight: '700', fontSize: 12, marginLeft: 4, color: 'white' }}>{l.progress.percentage}%</Text>
+                                </View>
+                            } */}
                         </TouchableOpacity>
                     </View>
                 })}
             </View>
+            {data.role === 'LECTURER' && <CreateLesson />}
             <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                 <Button
                     onPress={() => setMode('LIST')}

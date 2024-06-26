@@ -12,15 +12,15 @@ import WebView from 'react-native-webview'
 import { useAuthStore } from '@/store/auth';
 
 function ContentDetail() {
-    const { course, lesson, content, setMode, setCourseData }: { course: ICourseData, lesson: ILesson, content: IContent, setMode: (data: any) => void, setCourseData: (data: any) => void } = useCourseStore()
+    const { course, lesson, content, setMode, setCourseData, setContentData }: { course: ICourseData, lesson: ILesson, content: IContent, setMode: (data: any) => void, setCourseData: (data: any) => void, setContentData: (data: any) => void } = useCourseStore()
     const dummyQuiz = [{ text: 'lorem ipsum dolor sit amet', option: ['blbl', 'asa', 'asdASdjljk', 'plklklj'], answer: null }, { text: 'lorem ipsum dolor sit', option: ['blbl', 'asa', 'asdASdjljk', 'plklklj'], answer: null }]
     const { token } = useAuthStore()
     const [discussion, setDiscussion] = useState('')
     const [quiz, setQuiz] = useState<any>(dummyQuiz)
 
-    const getCourseDetail = async (data: ICourseData) => {
+    const getContentDetail = async (data: IContent) => {
         try {
-            const response = await fetch(`${API_URL}/courses/${data.id}`, {
+            const response = await fetch(`${API_URL}/contents/${data.id}`, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -29,12 +29,12 @@ function ContentDetail() {
                 },
             })
             const json = await response.json()
-            console.log('course detail by id', JSON.stringify(json))
+            console.log('content detail by id', JSON.stringify(json))
 
             if (response.status === 200) {
-                setCourseData(json.data)
+                setContentData(json.data)
             }
-            if (response.status === 400) Alert.alert('Get Courses Detail Failed')
+            if (response.status === 400) Alert.alert('Get Content Detail Failed')
         } catch (error) {
             // Alert.alert('Get Courses Failed')
         }
@@ -58,7 +58,7 @@ function ContentDetail() {
         if (json.status) {
             Alert.alert('Diskusi berhasil ditambahkan!')
             setDiscussion('')
-            getCourseDetail(course)
+            getContentDetail(content)
         }
         if (response.status === 400) Alert.alert('Diskusi gagal ditambahkan!')
     };
@@ -123,7 +123,7 @@ function ContentDetail() {
     }
     console.log('content', content)
     return (
-        <ScrollView>
+        <ScrollView nestedScrollEnabled>
             <View style={{ flex: 1 }}>
                 <WebView
                     style={{
@@ -172,7 +172,7 @@ function ContentDetail() {
 
             <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
                 <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Diskusi</Text>
-                <ScrollView >
+                {/* <ScrollView >
                     {content.comments.map((item) =>
                         <View style={{ paddingHorizontal: 20 }}>
                             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
@@ -182,9 +182,10 @@ function ContentDetail() {
                             <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 0 }}>{item.content}</Text>
                         </View>
                     )}
-                </ScrollView>
+                </ScrollView> */}
 
-                {/* <FlatList
+                <FlatList
+                    nestedScrollEnabled
                     data={content.comments}
                     keyExtractor={(item, index) => "comment-" + index}
                     renderItem={({ item, index }) =>
@@ -197,7 +198,8 @@ function ContentDetail() {
                         </View>
                     }
                     scrollEnabled={true}
-                /> */}
+                    style={{ height: 100 }}
+                />
                 <TextInput
                     style={{ width: '100%', marginVertical: 12, padding: 12, height: 40, borderWidth: 1 }}
                     onChangeText={(e) => setDiscussion(e)}
