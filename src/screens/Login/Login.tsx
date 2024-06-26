@@ -29,7 +29,7 @@ import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
 const genders = ["Pria", "Wanita"];
 
-function Login({ navigation }) {
+function Login({ navigation }: any) {
 	const { token, setAuthToken, setAuthData } = useAuthStore()
 	const [email, onChangeEmail] = useState("");
 	const [password, onChangePassword] = useState("");
@@ -128,13 +128,13 @@ function Login({ navigation }) {
 						<Button
 							onPress={onPressLogin}
 							title="Login"
-							color={colors.gray800}
-							accessibilityLabel="Learn more about this purple button"
+							color={"#004aad"}
+							accessibilityLabel="Login"
 						/>
-						<Button
+						{/* <Button
 							title="Go to Register"
 							onPress={() => navigation.navigate('Register')}
-						/>
+						/> */}
 					</View>
 				</View>
 			</ScrollView>

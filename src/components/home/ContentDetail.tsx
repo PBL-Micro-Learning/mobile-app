@@ -10,11 +10,12 @@ import { API_URL } from '@/const';
 import { IContent, ICourseData, ILesson } from './HomeList';
 import WebView from 'react-native-webview'
 import { useAuthStore } from '@/store/auth';
+import CreateContent from './CreateContent';
 
 function ContentDetail() {
     const { course, lesson, content, setMode, setCourseData, setContentData }: { course: ICourseData, lesson: ILesson, content: IContent, setMode: (data: any) => void, setCourseData: (data: any) => void, setContentData: (data: any) => void } = useCourseStore()
     const dummyQuiz = [{ text: 'lorem ipsum dolor sit amet', option: ['blbl', 'asa', 'asdASdjljk', 'plklklj'], answer: null }, { text: 'lorem ipsum dolor sit', option: ['blbl', 'asa', 'asdASdjljk', 'plklklj'], answer: null }]
-    const { token } = useAuthStore()
+    const { token, data } = useAuthStore()
     const [discussion, setDiscussion] = useState('')
     const [quiz, setQuiz] = useState<any>(dummyQuiz)
 
@@ -122,39 +123,41 @@ function ContentDetail() {
         return 'aETL4vduQfs'
     }
     console.log('content', content)
+    console.log('contentDetail data', data)
     return (
         <ScrollView nestedScrollEnabled>
-            <View style={{ flex: 1 }}>
-                <WebView
-                    style={{
-                        height: 150,
-                        width: Dimensions.get('window').width,
-                        marginTop: 0,
-                    }}
-                    javaScriptEnabled={true}
-                    domStorageEnabled={true}
-                    // source={{ uri: 'https://www.youtube.com/embed/' + getYoutubeID(content.video_url) }}
-                    source={{ uri: `${content.video_url}?controls=0&showinfo=0&wmode=transparent&rel=0&mode=opaque` }}
-                />
-            </View>
-            {/* <ImageVariant source={{ uri: course.cover_url }} style={{ width: '100%', height: 90, borderRadius: 20 }} /> */}
-            <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>{content.title}</Text>
-            <View style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 10 }}>
-                <Button
-                    onPress={onPressLike}
-                    title="Suka"
-                    color={'#004aad'}
-                />
-                <Button
-                    onPress={onPressWatch}
-                    title="Tandai Sudah Menonton"
-                    color={'#004aad'}
-                />
-            </View>
-            {/* <Text style={{ fontWeight: '700', fontSize: 16, marginVertical: 8 }}>Lesson: {lesson.title}</Text>
+            <>
+                <View style={{ flex: 1 }}>
+                    <WebView
+                        style={{
+                            height: 150,
+                            width: Dimensions.get('window').width,
+                            marginTop: 0,
+                        }}
+                        javaScriptEnabled={true}
+                        domStorageEnabled={true}
+                        // source={{ uri: 'https://www.youtube.com/embed/' + getYoutubeID(content.video_url) }}
+                        source={{ uri: `${content.video_url}?controls=0&showinfo=0&wmode=transparent&rel=0&mode=opaque` }}
+                    />
+                </View>
+                {/* <ImageVariant source={{ uri: course.cover_url }} style={{ width: '100%', height: 90, borderRadius: 20 }} /> */}
+                <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>{content.title}</Text>
+                <View style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 10 }}>
+                    <Button
+                        onPress={onPressLike}
+                        title="Suka"
+                        color={'#004aad'}
+                    />
+                    <Button
+                        onPress={onPressWatch}
+                        title="Tandai Sudah Menonton"
+                        color={'#004aad'}
+                    />
+                </View>
+                {/* <Text style={{ fontWeight: '700', fontSize: 16, marginVertical: 8 }}>Lesson: {lesson.title}</Text>
             <Text style={{ fontWeight: '400', fontSize: 14, marginVertical: 2 }}>{lesson.description}</Text> */}
 
-            {/* <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
+                {/* <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
                 <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Materi</Text>
                 <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {lesson.progress.total_contents}</Text>
                 {lesson?.contents?.map((c, lIdx) => {
@@ -170,50 +173,42 @@ function ContentDetail() {
                 })}
             </View> */}
 
-            <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
-                <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Diskusi</Text>
-                {/* <ScrollView >
-                    {content.comments.map((item) =>
-                        <View style={{ paddingHorizontal: 20 }}>
-                            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                                <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{item.user.name}</Text>
-                                <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 8 }}>{`${new Date(item.date).getUTCDate()}-${new Date(item.date).getUTCMonth()}-${new Date(item.date).getUTCFullYear()} ${new Date(item.date).getHours()}:${new Date(item.date).getMinutes()}:${new Date(item.date).getSeconds()}`}</Text>
-                            </View>
-                            <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 0 }}>{item.content}</Text>
+                {data.role === 'STUDENT' &&
+                    <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
+                        <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Diskusi</Text>
+                        <FlatList
+                            nestedScrollEnabled
+                            data={content.comments}
+                            keyExtractor={(item, index) => "comment-" + index}
+                            renderItem={({ item, index }) =>
+                                <View style={{ paddingHorizontal: 20 }}>
+                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                                        <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{item.user.name}</Text>
+                                        <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 8 }}>{`${new Date(item.date).getUTCDate()}-${new Date(item.date).getUTCMonth()}-${new Date(item.date).getUTCFullYear()} ${new Date(item.date).getHours()}:${new Date(item.date).getMinutes()}:${new Date(item.date).getSeconds()}`}</Text>
+                                    </View>
+                                    <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 0 }}>{item.content}</Text>
+                                </View>
+                            }
+                            scrollEnabled={true}
+                            style={{ height: 100 }}
+                        />
+                        <TextInput
+                            style={{ width: '100%', marginVertical: 12, padding: 12, height: 40, borderWidth: 1 }}
+                            onChangeText={(e) => setDiscussion(e)}
+                            value={discussion}
+                            placeholder="Tulis Diskusi di sini"
+                        />
+                        <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                            <Button
+                                onPress={onPressSubmitDiscussion}
+                                title="Kirim"
+                                color={'#004aad'}
+                            />
                         </View>
-                    )}
-                </ScrollView> */}
+                    </View>
+                }
 
-                <FlatList
-                    nestedScrollEnabled
-                    data={content.comments}
-                    keyExtractor={(item, index) => "comment-" + index}
-                    renderItem={({ item, index }) =>
-                        <View style={{ paddingHorizontal: 20 }}>
-                            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                                <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{item.user.name}</Text>
-                                <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 8 }}>{`${new Date(item.date).getUTCDate()}-${new Date(item.date).getUTCMonth()}-${new Date(item.date).getUTCFullYear()} ${new Date(item.date).getHours()}:${new Date(item.date).getMinutes()}:${new Date(item.date).getSeconds()}`}</Text>
-                            </View>
-                            <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 0 }}>{item.content}</Text>
-                        </View>
-                    }
-                    scrollEnabled={true}
-                    style={{ height: 100 }}
-                />
-                <TextInput
-                    style={{ width: '100%', marginVertical: 12, padding: 12, height: 40, borderWidth: 1 }}
-                    onChangeText={(e) => setDiscussion(e)}
-                    value={discussion}
-                    placeholder="Tulis Diskusi di sini"
-                />
-                <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <Button
-                        onPress={onPressSubmitDiscussion}
-                        title="Kirim"
-                        color={'gray'}
-                    />
-                </View>
-            </View>
+            </>
             {/* <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
                 <View style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
                     {dummyQuiz.map((item, index) => <View key={`quiz-${index}`} style={{ paddingHorizontal: 20 }}>
@@ -227,15 +222,15 @@ function ContentDetail() {
                     <Button
                         onPress={onPressSubmitDiscussion}
                         title="Kirim"
-                        color={'gray'}
+                        color={'#004aad'}
                     />
                 </View>
             </View> */}
-            <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            <View style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: 50 }}>
                 <Button
                     onPress={() => setMode('LESSONDETAIL')}
                     title="Kembali"
-                    color={'gray'}
+                    color={'#004aad'}
                 />
             </View>
         </ScrollView>

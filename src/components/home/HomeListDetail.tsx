@@ -52,26 +52,27 @@ function HomeListDetail() {
                 {course?.lessons?.map((l, lIdx) => {
                     return <View key={`lesson-${lIdx}`} style={{ paddingVertical: 20, paddingHorizontal: 10, width: '100%', borderWidth: 1, borderColor: 'black' }}>
                         <TouchableOpacity onPress={() => {
+                            console.log('HomeListDetail data', l)
                             setMode('LESSONDETAIL')
                             setLessonData(l)
                         }}>
                             <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{lIdx + 1}. {l.title}</Text>
                             <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 2 }}>{l.description}</Text>
-                            {/* {l?.progress?.percentage &&
+                            {l?.progress?.percentage ?
                                 <View style={{ display: 'flex', justifyContent: 'center', width: `${l.progress.percentage}%`, backgroundColor: "green", height: 20 }}>
                                     <Text style={{ fontWeight: '700', fontSize: 12, marginLeft: 4, color: 'white' }}>{l.progress.percentage}%</Text>
-                                </View>
-                            } */}
+                                </View> : null
+                            }
                         </TouchableOpacity>
                     </View>
                 })}
             </View>
             {data.role === 'LECTURER' && <CreateLesson />}
-            <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            <View style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: 50 }}>
                 <Button
                     onPress={() => setMode('LIST')}
                     title="Kembali"
-                    color={'gray'}
+                    color={'#004aad'}
                 />
             </View>
         </ ScrollView>

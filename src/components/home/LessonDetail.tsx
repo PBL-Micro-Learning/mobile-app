@@ -8,10 +8,19 @@ import RadioGroup from 'react-native-radio-buttons-group';
 import { useCourseStore } from '@/store/course';
 import { API_URL } from '@/const';
 import { ICourseData, ILesson } from './HomeList';
+import { useAuthStore } from '@/store/auth';
+import CreateQuiz from './CreateQuiz';
+import AnswerQuiz from './AnswerQuiz';
+import CreateContent from './CreateContent';
 
 function LessonDetail() {
+    const { data } = useAuthStore()
     const { course, lesson, setMode, setContentData }: { course: ICourseData, lesson: ILesson, setMode: (data: any) => void, setContentData: (data: any) => void } = useCourseStore()
-    const dummyQuiz = [{ text: 'lorem ipsum dolor sit amet', option: ['blbl', 'asa', 'asdASdjljk', 'plklklj'], answer: null }, { text: 'lorem ipsum dolor sit', option: ['blbl', 'asa', 'asdASdjljk', 'plklklj'], answer: null }]
+    console.log('data inside lessonDetail', data)
+    const dummyQuiz = [
+        { content: 'Question 1', option: [{ content: 'A', is_correct: false }, { content: 'B', is_correct: false }, { content: 'C', is_correct: false }, { content: 'D', is_correct: true }] }
+        , { content: 'Question 2', option: [{ content: 'A', is_correct: false }, { content: 'B', is_correct: false }, { content: 'C', is_correct: false }, { content: 'D', is_correct: true }] }
+    ]
     const [discussion, setDiscussion] = useState('')
     const [quiz, setQuiz] = useState<any>(dummyQuiz)
     const onPressSubmitDiscussion = async () => {
@@ -54,9 +63,10 @@ function LessonDetail() {
                 {lesson?.progress?.total_contents &&
                     <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {lesson.progress.total_contents}</Text>
                 }
-                {lesson?.contents?.map((c, lIdx) => {
+                {lesson?.contents?.length > 0 && lesson?.contents?.map((c, lIdx) => {
                     return <View key={`lesson-${lIdx}`} style={{ paddingVertical: 20, paddingHorizontal: 10, width: '100%', borderWidth: 1, borderColor: 'black' }}>
                         <TouchableOpacity onPress={() => {
+                            console.log('content data', c)
                             setMode('CONTENTDETAIL')
                             setContentData(c)
                         }}>
@@ -70,25 +80,36 @@ function LessonDetail() {
             <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
                 <View style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
                     {dummyQuiz.map((item, index) => <View key={`quiz-${index}`} style={{ paddingHorizontal: 20 }}>
-                        <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{item.text}</Text>
-                        <RadioGroup onPress={(e) => handleAnswerQuiz(index, e)} radioButtons={item.option.map((i, idx) => {
+                        <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{item.content}</Text>
+                        {/* <RadioGroup onPress={(e) => handleAnswerQuiz(index, e)} radioButtons={item.option.map((i, idx) => {
                             return { id: `${idx}`, label: i, value: i }
-                        })} selectedId={`${quiz[index].answer}`} />
+                        })} selectedId={`${quiz[index].answer}`} /> */}
                     </View>)}
                 </View>
-                <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                {/* <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                     <Button
                         onPress={onPressSubmitDiscussion}
                         title="Kirim"
-                        color={'gray'}
+                        color={'#004aad'}
                     />
-                </View>
+                </View> */}
             </View>
-            <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+
+            {data.role === "STUDENT" &&
+                <AnswerQuiz />
+
+            }
+            {data.role === 'LECTURER' &&
+                <>
+                    <CreateContent />
+                    <CreateQuiz />
+                </>
+            }
+            <View style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: 50 }}>
                 <Button
                     onPress={() => setMode('DETAIL')}
                     title="Kembali"
-                    color={'gray'}
+                    color={'#004aad'}
                 />
             </View>
         </ScrollView>

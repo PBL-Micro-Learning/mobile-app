@@ -28,12 +28,16 @@ import TranslateImage from "@/theme/assets/images/translate.png";
 import SelectDropdown from "react-native-select-dropdown";
 import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
-const genders = ["Pria", "Wanita"];
+const genders = ["male", "female"];
+const roles = ["STUDENT", "LECTURER"];
 
-function Profile({ navigation }) {
-    const { data: authData, setAuthToken, removeAuthToken } = useAuthStore()
+function Profile() {
+    const { data: authData, token, setAuthToken, removeAuthToken } = useAuthStore()
+    const [name, onChangeName] = useState("");
     const [email, onChangeEmail] = useState("");
     const [password, onChangePassword] = useState("");
+    const [gender, onChangeGender] = useState("male");
+    const [role, onChangeRole] = useState("STUDENT");
     const {
         colors,
         variant,
@@ -49,26 +53,34 @@ function Profile({ navigation }) {
 
     console.log('authData', authData)
 
-    const onPressLogin = async () => {
-        const response = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email,
-                password
-            }),
-        })
-        const json = await response.json()
-        console.log('login', json.data.user.token)
-        if (response.status === 200) {
-            Alert.alert('Login Success!')
-            setAuthToken(json.data.user.token)
-            navigation.navigate('Dashboard')
+    const onPressCreateUser = async () => {
+        try {
+            const response = await fetch(`${API_URL}/users`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password
+                }),
+            })
+            const json = await response.json()
+            console.log('create User', json)
+            if (response.status === 200) {
+                Alert.alert('Create User Success!')
+                onChangeName('')
+                onChangeEmail('')
+                onChangePassword('')
+                onChangeGender('')
+                onChangeRole('')
+            }
+            if (response.status === 400) Alert.alert('Create User Failed!')
+        } catch (error) {
+            Alert.alert('Create User Failed!')
         }
-        if (response.status === 400) Alert.alert('Login Failed!')
     };
 
     return (
@@ -83,20 +95,125 @@ function Profile({ navigation }) {
                     ]}
                 >
                     <ImageVariant source={Logo} style={{ width: 150, height: 150, borderRadius: 20 }} />
-                    <Text style={[fonts.size_16, fonts.gray800, fonts.bold, { color: "#004aad" }]}>
+                    {/* <Text style={[fonts.size_16, fonts.gray800, fonts.bold, { color: "#004aad" }]}>
                         ubah photo
-                    </Text>
-                    <View style={{ borderWidth: 1, borderColor: "gray", backgroundColor: "lightgray", width: "100%", marginHorizontal: 8 }}>
+                    </Text> */}
+                    <View style={{ borderWidth: 1, borderColor: "#004aad", backgroundColor: "lightgray", width: "100%", marginHorizontal: 8 }}>
                         <Text style={[fonts.alignCenter, fonts.size_24, fonts.gray800, fonts.bold]}>
                             {authData?.name || '-'}
                         </Text>
                     </View>
-                    <View style={{ borderWidth: 1, borderColor: "gray", backgroundColor: "lightgray", width: "100%", marginHorizontal: 8 }}>
+                    <View style={{ borderWidth: 1, borderColor: "#004aad", backgroundColor: "lightgray", width: "100%", marginHorizontal: 8 }}>
                         <Text style={[fonts.alignCenter, fonts.size_24, fonts.gray800, fonts.bold]}>
                             {authData?.email || '-'}
                         </Text>
                     </View>
                 </View>
+                {authData?.role === 'LECTURER' &&
+                    <View style={[gutters.paddingHorizontal_32, gutters.marginTop_40]}>
+                        <View style={[layout.justifyCenter]}>
+                            <Text style={[fonts.alignCenter, fonts.size_24, fonts.gray800, fonts.bold]}>
+                                Create New User
+                            </Text>
+                            <TextInput
+                                style={[
+                                    gutters.marginVertical_12,
+                                    gutters.padding_12,
+                                    { height: 40, borderWidth: 1 },
+                                ]}
+                                onChangeText={onChangeName}
+                                value={name}
+                                placeholder="Name"
+                            />
+                            <TextInput
+                                style={[
+                                    gutters.marginVertical_12,
+                                    gutters.padding_12,
+                                    { height: 40, borderWidth: 1 },
+                                ]}
+                                onChangeText={onChangeEmail}
+                                value={email}
+                                placeholder="Email"
+                            />
+                            <TextInput
+                                style={[
+                                    gutters.marginVertical_12,
+                                    gutters.padding_12,
+                                    { height: 40, borderWidth: 1 },
+                                ]}
+                                onChangeText={onChangePassword}
+                                value={password}
+                                placeholder="Password"
+                            />
+                            <SelectDropdown
+                                buttonStyle={[
+                                    gutters.marginVertical_12,
+                                    layout.fullWidth,
+                                    { height: 40, borderWidth: 1 },
+                                ]}
+                                data={genders}
+                                defaultButtonText="Select Gender"
+                                onSelect={(selectedItem, index) => {
+                                    console.log(selectedItem, index);
+                                    onChangeGender(selectedItem)
+                                }}
+                                buttonTextAfterSelection={(selectedItem, index) => {
+                                    // text represented after item is selected
+                                    // if data array is an array of objects then return selectedItem.property to render after item is selected
+                                    return selectedItem;
+                                }}
+                                rowTextForSelection={(item, index) => {
+                                    // text represented for each item in dropdown
+                                    // if data array is an array of objects then return item.property to represent item in dropdown
+                                    return item;
+                                }}
+                            />
+                            <SelectDropdown
+                                buttonStyle={[
+                                    gutters.marginVertical_12,
+                                    layout.fullWidth,
+                                    { height: 40, borderWidth: 1 },
+                                ]}
+                                data={roles}
+                                defaultButtonText="Select Role"
+                                onSelect={(selectedItem, index) => {
+                                    console.log(selectedItem, index);
+                                    onChangeRole(selectedItem)
+                                }}
+                                buttonTextAfterSelection={(selectedItem, index) => {
+                                    // text represented after item is selected
+                                    // if data array is an array of objects then return selectedItem.property to render after item is selected
+                                    return selectedItem;
+                                }}
+                                rowTextForSelection={(item, index) => {
+                                    // text represented for each item in dropdown
+                                    // if data array is an array of objects then return item.property to represent item in dropdown
+                                    return item;
+                                }}
+                            />
+                        </View>
+
+                        <View
+                            style={[
+                                layout.justifyCenter,
+                                layout.fullWidth,
+                                gutters.marginTop_16,
+                                { gap: 10 }
+                            ]}
+                        >
+                            <Button
+                                onPress={onPressCreateUser}
+                                title="Create User"
+                                color={"#004aad"}
+                                accessibilityLabel="Create User"
+                            />
+                            {/* <Button
+							title="Go to Register"
+							onPress={() => navigation.navigate('Register')}
+						/> */}
+                        </View>
+                    </View>
+                }
             </ScrollView>
         </SafeScreen>
     );
