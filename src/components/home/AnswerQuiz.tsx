@@ -31,7 +31,9 @@ function AnswerQuiz() {
     console.log('lesson inside lessonDetail', lesson)
     const [loading, setLoading] = useState(false)
     const [name, onChangeName] = useState("");
-    const options = ["A", "B", "C", "D"]
+    const [quiz, setQuiz] = useState<any>({})
+    const dummyOptions = [{ mark: '', content: '' }]
+    const [options, setOptions] = useState(dummyOptions)
     const [answer, onChangeAnswer] = useState("");
     const [description, onChangeDescription] = useState("");
     const {
@@ -67,9 +69,32 @@ function AnswerQuiz() {
         }
     };
 
+
+    const getQuizById = async (id: number) => {
+        const response = await fetch(`${API_URL}/quizzes/${id}/questions`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        const json = await response.json()
+        console.log('quiz by id', json.data)
+        if (response.status === 200) {
+            setQuiz(json.data)
+            setOptions(json.data.options)
+            // Alert.alert('Diskusi berhasil ditambahkan!')
+        }
+        if (response.status === 400) Alert.alert('Quiz gagal dibaca!')
+    };
+    console.log('quiz', quiz)
     const onSubmitAnswer = async () => {
         try {
-            const response = await fetch(`${API_URL}/quizzes`, {
+            console.log('jawaban', answer)
+            console.log(`quiz_id`, quiz.id)
+            setLoading(true)
+            const response = await fetch(`${API_URL}/questions/${quiz.id}/answer`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -77,38 +102,43 @@ function AnswerQuiz() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    lesson_id: lesson.id,
-                    title: name,
-                    description
+                    mark: answer
                 }),
             })
             const json = await response.json()
-            console.log('create Quiz', json)
+            console.log('submit answer', json)
             if (response.status === 200) {
-                Alert.alert('Buat Quiz Berhasil')
-                getCourseDetail(course)
-                onChangeName('')
-                onChangeDescription('')
+                setLoading(false)
+                getQuizById(lesson.quiz_id)
             }
-            if (response.status === 400) Alert.alert('Gagal membuat materi')
+            if (response.status === 400) {
+                setLoading(false)
+                Alert.alert('Gagal memuat quiz')
+            }
 
         } catch (error) {
-            Alert.alert('Gagal membuat materi')
+            setLoading(false)
+            Alert.alert('Gagal memuat quiz')
         }
     };
 
-    const onMockGetQuiz = () => {
-        setLoading(true)
-        setTimeout(() => setLoading(false), 3000)
-    }
+    // const onMockGetQuiz = () => {
+    //     setLoading(true)
+    //     setTimeout(() => setLoading(false), 3000)
+    // }
 
+    useEffect(() => {
+        if (lesson.quiz_id) getQuizById(lesson.quiz_id)
+    }, [lesson.quiz_d])
+
+    console.log('answer', answer)
     return (
         <SafeScreen>
             {!loading ?
                 <ScrollView>
                     <View style={[gutters.paddingHorizontal_32, gutters.marginTop_40]}>
                         <View style={[layout.justifyCenter]}>
-                            <Text style={{fontWeight: '700'}}>Question 1</Text>
+                            <Text style={{ fontWeight: '700' }}>{quiz?.content ?? '-'}</Text>
                             <SelectDropdown
                                 buttonStyle={[
                                     gutters.marginVertical_12,
@@ -119,17 +149,18 @@ function AnswerQuiz() {
                                 defaultButtonText="Select Answer"
                                 onSelect={(selectedItem, index) => {
                                     console.log(selectedItem, index);
-                                    onChangeAnswer(selectedItem)
+                                    onChangeAnswer(selectedItem.mark)
                                 }}
                                 buttonTextAfterSelection={(selectedItem, index) => {
                                     // text represented after item is selected
                                     // if data array is an array of objects then return selectedItem.property to render after item is selected
-                                    return selectedItem;
+                                    console.log('selectedItem', selectedItem)
+                                    return `${selectedItem.mark}. ${selectedItem.content}`;
                                 }}
                                 rowTextForSelection={(item, index) => {
                                     // text represented for each item in dropdown
                                     // if data array is an array of objects then return item.property to represent item in dropdown
-                                    return item;
+                                    return `${item.mark}. ${item.content}`;
                                 }}
                             />
                         </View>
@@ -143,8 +174,7 @@ function AnswerQuiz() {
                             ]}
                         >
                             <Button
-                                // onPress={onSubmitAnswer}
-                                onPress={onMockGetQuiz}
+                                onPress={onSubmitAnswer}
                                 title="Kirim Jawaban"
                                 color={'#004aad'}
                                 accessibilityLabel="Kirim Jawaban"

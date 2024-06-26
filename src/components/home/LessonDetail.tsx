@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { FlatList, TextInput } from 'react-native-gesture-handler'
 import { ImageVariant } from '../atoms'
 import Logo from '@/theme/assets/images/microlearning.png';
@@ -14,15 +14,33 @@ import AnswerQuiz from './AnswerQuiz';
 import CreateContent from './CreateContent';
 
 function LessonDetail() {
-    const { data } = useAuthStore()
+    const { data, token } = useAuthStore()
     const { course, lesson, setMode, setContentData }: { course: ICourseData, lesson: ILesson, setMode: (data: any) => void, setContentData: (data: any) => void } = useCourseStore()
     console.log('data inside lessonDetail', data)
+    console.log('lesson detail', lesson)
     const dummyQuiz = [
-        { content: 'Question 1', option: [{ content: 'A', is_correct: false }, { content: 'B', is_correct: false }, { content: 'C', is_correct: false }, { content: 'D', is_correct: true }] }
-        , { content: 'Question 2', option: [{ content: 'A', is_correct: false }, { content: 'B', is_correct: false }, { content: 'C', is_correct: false }, { content: 'D', is_correct: true }] }
+        { content: 'Test Question', option: [{ content: 'A', is_correct: false }, { content: 'B', is_correct: false }, { content: 'C', is_correct: false }, { content: 'D', is_correct: true }] }
     ]
     const [discussion, setDiscussion] = useState('')
     const [quiz, setQuiz] = useState<any>(dummyQuiz)
+    const getQuizById = async (id: number) => {
+        const response = await fetch(`${API_URL}/quizzes/${id}/questions`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        const json = await response.json()
+        console.log('quiz by id', json.data)
+        if (response.status === 200) {
+            setQuiz(json.data)
+            // Alert.alert('Diskusi berhasil ditambahkan!')
+        }
+        if (response.status === 400) Alert.alert('Quiz gagal dibaca!')
+    };
+
     const onPressSubmitDiscussion = async () => {
         setMode('LIST')
         const response = await fetch(`${API_URL}/auth/login`, {
@@ -51,6 +69,11 @@ function LessonDetail() {
         // setQuiz()
 
     }
+
+    useLayoutEffect(() => {
+        if (lesson.quiz_id) getQuizById(lesson.quiz_id)
+    }, [lesson.quiz_id])
+
     return (
         <ScrollView>
             <ImageVariant source={{ uri: course.cover_url }} style={{ width: '100%', height: 90, borderRadius: 20 }} />

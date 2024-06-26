@@ -50,6 +50,7 @@ export interface ILesson {
     course_id: number,
     progress: IProgress,
     contents: IContent[]
+    quiz_id: number
 }
 export interface ICourseData {
     id: number
