@@ -4,9 +4,12 @@ import { ImageVariant } from '../atoms'
 import DropShadow from "react-native-drop-shadow";
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { ICourseData } from '../home/HomeList';
+import { useAuthStore } from '@/store/auth';
+import { API_URL } from '@/const';
 
 interface ClassProps {
     courseData: ICourseData[]
+    getCourses: () => void
 }
 interface IClassListItem extends ICourseData {
     index: number
@@ -31,8 +34,27 @@ const dummyData = [
 
     }
 ]
-const ClassListItem = (data: IClassListItem) => {
+const ClassListItem = ({ data, getCourses }: { data: ICourseData, getCourses: () => void }) => {
     console.log('data', data)
+    const { token } = useAuthStore()
+    const onPressSubmitEnroll = async (id: number) => {
+        console.log('submit enroll', `${API_URL}/courses/${id}/enroll`)
+        const response = await fetch(`${API_URL}/courses/${id}/enroll`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        const json = await response.json()
+        console.log('submit enroll', json)
+        if (json.status) {
+            Alert.alert('Enroll berhasil!')
+            getCourses()
+        }
+        if (response.status === 400) Alert.alert('Diskusi gagal ditambahkan!')
+    };
     return (
         <DropShadow style={{
             shadowColor: '#171717',
@@ -47,7 +69,10 @@ const ClassListItem = (data: IClassListItem) => {
                     [
                         {
                             text: 'Ok',
-                            onPress: () => Alert.alert('Ok Pressed'),
+                            onPress: () => {
+                                onPressSubmitEnroll(data.id)
+                            }
+                            ,
                             style: 'cancel',
                         },
                         {
@@ -84,7 +109,7 @@ const ClassListItem = (data: IClassListItem) => {
                         justifyContent: 'space-evenly',
                         flex: 1,
                     }}>
-                        {data.is_enrolled && <View style={{display: 'flex', alignItems: 'flex-end'}} >
+                        {data.is_enrolled && <View style={{ display: 'flex', alignItems: 'flex-end' }} >
                             <View style={{ padding: 2, backgroundColor: 'green', width: 70, borderRadius: 10 }}>
                                 <Text style={{ color: 'white', textAlign: 'center' }}>Enrolled</Text>
                             </View>
@@ -104,13 +129,13 @@ const ClassListItem = (data: IClassListItem) => {
         </DropShadow >
     )
 }
-function ClassList({ courseData }: ClassProps) {
+function ClassList({ courseData, getCourses }: ClassProps) {
     console.log('courseData', courseData)
     return (
         <FlatList
             data={courseData}
             keyExtractor={(item, index) => "List-" + index}
-            renderItem={({ item, index }) => <ClassListItem index={index} {...item} />}
+            renderItem={({ item }) => <ClassListItem data={item} getCourses={getCourses} {...item} />}
 
             scrollEnabled={true}
         />

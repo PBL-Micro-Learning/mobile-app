@@ -123,7 +123,7 @@ function Class() {
                 </TouchableOpacity>
             </View>
             {mode === 'view' ?
-                <ClassList courseData={courses} />
+                <ClassList courseData={courses} getCourses={getCourses} />
                 : <CreateClass />
             }
         </SafeScreen>
