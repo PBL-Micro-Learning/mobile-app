@@ -29,7 +29,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
 const genders = ["male", "female"];
-const roles = ["STUDENT", "LECTURER"];
+const roles = ["student", "lecturer"];
 
 function Profile() {
     const { data: authData, token, setAuthToken, removeAuthToken } = useAuthStore()
@@ -37,7 +37,7 @@ function Profile() {
     const [email, onChangeEmail] = useState("");
     const [password, onChangePassword] = useState("");
     const [gender, onChangeGender] = useState("male");
-    const [role, onChangeRole] = useState("STUDENT");
+    const [role, onChangeRole] = useState("student");
     const {
         colors,
         variant,
@@ -63,13 +63,16 @@ function Profile() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    name,
+                    role,
+                    gender,
                     email,
                     password
                 }),
             })
             const json = await response.json()
             console.log('create User', json)
-            if (response.status === 200) {
+            if (response.status) {
                 Alert.alert('Create User Success!')
                 onChangeName('')
                 onChangeEmail('')
@@ -77,7 +80,7 @@ function Profile() {
                 onChangeGender('')
                 onChangeRole('')
             }
-            if (response.status === 400) Alert.alert('Create User Failed!')
+            if (!response.status) Alert.alert('Create User Failed!')
         } catch (error) {
             Alert.alert('Create User Failed!')
         }
@@ -109,7 +112,7 @@ function Profile() {
                         </Text>
                     </View>
                 </View>
-                {authData?.role === 'LECTURER' &&
+                {authData?.role === 'ADMIN' &&
                     <View style={[gutters.paddingHorizontal_32, gutters.marginTop_40]}>
                         <View style={[layout.justifyCenter]}>
                             <Text style={[fonts.alignCenter, fonts.size_24, fonts.gray800, fonts.bold]}>
@@ -202,6 +205,13 @@ function Profile() {
                             ]}
                         >
                             <Button
+                                disabled={
+                                    name === "" ||
+                                    password === "" ||
+                                    role === "" ||
+                                    gender === "" ||
+                                    email === ""
+                                }
                                 onPress={onPressCreateUser}
                                 title="Create User"
                                 color={"#004aad"}
