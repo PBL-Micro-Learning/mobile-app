@@ -22,11 +22,11 @@ import { fetchOne } from "@/services/users";
 import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
 import { useCourseStore } from "@/store/course";
-import { ICourseData } from "./HomeList";
+import { ICourseData, ILesson } from "./HomeList";
 
 function CreateQuiz() {
     const { token, setAuthToken, setAuthData } = useAuthStore()
-    const { course, lesson, setCourseData } = useCourseStore()
+    const { course, lesson, setCourseData, setLessonData } = useCourseStore()
     console.log('lesson inside lessonDetail', lesson)
     const [name, onChangeName] = useState("");
     const [description, onChangeDescription] = useState("");
@@ -41,9 +41,9 @@ function CreateQuiz() {
         backgrounds,
     } = useTheme();
 
-    const getCourseDetail = async (data: ICourseData) => {
+    const getLessonDetail = async (data: ILesson) => {
         try {
-            const response = await fetch(`${API_URL}/courses/${data.id}`, {
+            const response = await fetch(`${API_URL}/lessons/${data.id}`, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -52,19 +52,20 @@ function CreateQuiz() {
                 },
             })
             const json = await response.json()
-            console.log('course detail by id', JSON.stringify(json))
+            console.log('lesson detail by id', JSON.stringify(json))
 
             if (response.status === 200) {
-                setCourseData(json.data)
+                setLessonData(json.data)
             }
-            if (response.status === 400) Alert.alert('Get Courses Detail Failed')
+            if (response.status === 400) Alert.alert('Get Lesson Detail Failed')
         } catch (error) {
-            // Alert.alert('Get Courses Failed')
+            Alert.alert('Get Lesson Failed')
         }
     };
 
-    const onSubmitCreateLesson = async () => {
+    const onSubmitCreateQuiz = async () => {
         try {
+            console.log('body quiz ', {lesson_id: lesson.id, title: name, description})
             const response = await fetch(`${API_URL}/quizzes`, {
                 method: 'POST',
                 headers: {
@@ -80,9 +81,9 @@ function CreateQuiz() {
             })
             const json = await response.json()
             console.log('create Quiz', json)
-            if (response.status === 200) {
+            if (response.status) {
                 Alert.alert('Buat Quiz Berhasil')
-                getCourseDetail(course)
+                getLessonDetail(course)
                 onChangeName('')
                 onChangeDescription('')
             }
@@ -129,7 +130,7 @@ function CreateQuiz() {
                         ]}
                     >
                         <Button
-                            onPress={onSubmitCreateLesson}
+                            onPress={onSubmitCreateQuiz}
                             title="Buat Quiz"
                             color={'#004aad'}
                             accessibilityLabel="Buat Quiz"

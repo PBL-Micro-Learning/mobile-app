@@ -12,6 +12,7 @@ import { useAuthStore } from '@/store/auth';
 import CreateQuiz from './CreateQuiz';
 import AnswerQuiz from './AnswerQuiz';
 import CreateContent from './CreateContent';
+import CreateQuestion from './CreateQuestion';
 
 function LessonDetail() {
     const { data, token } = useAuthStore()
@@ -125,7 +126,10 @@ function LessonDetail() {
             {data.role === 'LECTURER' &&
                 <>
                     <CreateContent />
-                    <CreateQuiz />
+                    {!lesson.quiz_id ?
+                        <CreateQuiz />
+                        : <CreateQuestion />
+                    }
                 </>
             }
             <View style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: 50 }}>
