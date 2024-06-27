@@ -134,56 +134,59 @@ function AnswerQuiz() {
     console.log('answer', answer)
     return (
         <SafeScreen>
-            {!loading ?
-                <ScrollView>
-                    <View style={[gutters.paddingHorizontal_32, gutters.marginTop_40]}>
-                        <View style={[layout.justifyCenter]}>
-                            <Text style={{ fontWeight: '700' }}>{quiz?.content ?? '-'}</Text>
-                            <SelectDropdown
-                                buttonStyle={[
-                                    gutters.marginVertical_12,
-                                    layout.fullWidth,
-                                    { height: 40, borderWidth: 1 },
-                                ]}
-                                data={options}
-                                defaultButtonText="Select Answer"
-                                onSelect={(selectedItem, index) => {
-                                    console.log(selectedItem, index);
-                                    onChangeAnswer(selectedItem.mark)
-                                }}
-                                buttonTextAfterSelection={(selectedItem, index) => {
-                                    // text represented after item is selected
-                                    // if data array is an array of objects then return selectedItem.property to render after item is selected
-                                    console.log('selectedItem', selectedItem)
-                                    return `${selectedItem.mark}. ${selectedItem.content}`;
-                                }}
-                                rowTextForSelection={(item, index) => {
-                                    // text represented for each item in dropdown
-                                    // if data array is an array of objects then return item.property to represent item in dropdown
-                                    return `${item.mark}. ${item.content}`;
-                                }}
-                            />
-                        </View>
+            <View style={{ borderWidth: 1, borderColor: 'black', paddingVertical: 20 }}>
+                {!loading ?
+                    <ScrollView>
+                        <View style={[gutters.paddingHorizontal_32]}>
+                            <View style={[layout.justifyCenter]}>
+                                <Text style={{ fontWeight: '700' }}>{quiz?.content ?? '-'}</Text>
+                                <SelectDropdown
+                                    buttonStyle={[
+                                        gutters.marginVertical_12,
+                                        layout.fullWidth,
+                                        { height: 40, borderWidth: 1 },
+                                    ]}
+                                    data={options}
+                                    defaultButtonText="Select Answer"
+                                    onSelect={(selectedItem, index) => {
+                                        console.log(selectedItem, index);
+                                        onChangeAnswer(selectedItem.mark)
+                                    }}
+                                    buttonTextAfterSelection={(selectedItem, index) => {
+                                        // text represented after item is selected
+                                        // if data array is an array of objects then return selectedItem.property to render after item is selected
+                                        console.log('selectedItem', selectedItem)
+                                        return `${selectedItem.mark}. ${selectedItem.content}`;
+                                    }}
+                                    rowTextForSelection={(item, index) => {
+                                        // text represented for each item in dropdown
+                                        // if data array is an array of objects then return item.property to represent item in dropdown
+                                        return `${item.mark}. ${item.content}`;
+                                    }}
+                                />
+                            </View>
 
-                        <View
-                            style={[
-                                layout.justifyCenter,
-                                layout.fullWidth,
-                                gutters.marginTop_16,
-                                { gap: 10 }
-                            ]}
-                        >
-                            <Button
-                                onPress={onSubmitAnswer}
-                                title="Kirim Jawaban"
-                                color={'#004aad'}
-                                accessibilityLabel="Kirim Jawaban"
-                            />
+                            <View
+                                style={[
+                                    layout.justifyCenter,
+                                    layout.fullWidth,
+                                    gutters.marginTop_16,
+                                    { gap: 10 }
+                                ]}
+                            >
+                                <Button
+                                    disabled={answer === ''}
+                                    onPress={onSubmitAnswer}
+                                    title="Kirim Jawaban"
+                                    color={'#004aad'}
+                                    accessibilityLabel="Kirim Jawaban"
+                                />
+                            </View>
                         </View>
-                    </View>
-                </ScrollView>
-                : <View style={{ padding: 20 }}><Text style={{ textAlign: 'center' }}>Loading new quiz...</Text></View>
-            }
+                    </ScrollView>
+                    : <View style={{ padding: 20 }}><Text style={{ textAlign: 'center' }}>Loading new quiz...</Text></View>
+                }
+            </View>
         </SafeScreen>
     );
 }
