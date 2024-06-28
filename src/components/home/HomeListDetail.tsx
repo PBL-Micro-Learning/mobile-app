@@ -38,7 +38,7 @@ function HomeListDetail() {
     };
     return (
         <ScrollView>
-            <ImageVariant source={{ uri: course.cover_url }} style={{ width: '100%', height: 90, borderRadius: 20 }} />
+            <ImageVariant source={{ uri: course?.cover_url }} style={{ width: '100%', height: 90, borderRadius: 20 }} />
             <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>{course.name}</Text>
             <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
                 <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Detail Materi</Text>
@@ -67,7 +67,7 @@ function HomeListDetail() {
                     </View>
                 })}
             </View>
-            {data.role === 'LECTURER' && <CreateLesson />}
+            {data?.role === 'LECTURER' && <CreateLesson />}
             <View style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: 50 }}>
                 <Button
                     onPress={() => setMode('LIST')}

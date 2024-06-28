@@ -31,6 +31,7 @@ import Home from "./Tab/Home";
 import Profile from "./Tab/Profile";
 import Search from "./Tab/Search";
 import Class from "./Tab/Class";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const Tab = createBottomTabNavigator();
 
@@ -85,42 +86,53 @@ function Dashboard() {
 						},
 						shadowColor: '#000',
 					},
-					// tabBarIconStyle: {
-					// 	top: 10,
-					// },
 					headerShown: true,
 					tabBarActiveTintColor: '#004aad',
 					tabBarInactiveTintColor: colors.gray400,
-					tabBarIcon: ({ color, size }) => {
-						console.log('color, size', color, size)
-						return (
-							<View style={{ padding: 10, borderRadius: 10, backgroundColor: color }}></View>
-						)
-					},
 				}}
 			>
 				<Tab.Screen name="Home" component={Home}
 					options={{
 						headerTitle: HeaderImage,
 						headerRight: Logout,
+						tabBarIcon: ({ color, size }) => {
+							return (
+								<Icon name="home" size={30} color={color} />
+							)
+						},
 					}}
 				/>
 				<Tab.Screen name="Search" component={Search}
 					options={{
 						headerTitle: HeaderImage,
 						headerRight: Logout,
+						tabBarIcon: ({ color, size }) => {
+							return (
+								<Icon name="search" size={30} color={color} />
+							)
+						},
 					}}
 				/>
 				<Tab.Screen name="Class" component={Class}
 					options={{
 						headerTitle: HeaderImage,
 						headerRight: Logout,
+						tabBarIcon: ({ color, size }) => {
+							return (
+								<Icon name="document" size={30} color={color} />
+							)
+						},
 					}}
 				/>
 				<Tab.Screen name="Profile" component={Profile}
 					options={{
 						headerTitle: HeaderImage,
 						headerRight: Logout,
+						tabBarIcon: ({ color, size }) => {
+							return (
+								<Icon name="body" size={30} color={color} />
+							)
+						},
 					}}
 				/>
 			</Tab.Navigator>

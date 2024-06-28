@@ -119,11 +119,11 @@ function LessonDetail() {
                 </View> */}
             </View>
 
-            {data.role === "STUDENT" &&
+            {data?.role === "STUDENT" &&
                 <AnswerQuiz />
 
             }
-            {data.role === 'LECTURER' &&
+            {data?.role === 'LECTURER' &&
                 <>
                     <CreateContent />
                     {!lesson.quiz_id ?

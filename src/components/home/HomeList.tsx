@@ -138,8 +138,10 @@ const HomeListItem = (data: IHomeListItem) => {
 function HomeList({ courseData }: HomeProps) {
     const { data } = useAuthStore()
     let enrolledCourse: ArrayLike<any> | null | undefined = []
-    if (data.role === 'STUDENT') enrolledCourse = courseData.filter(c => c.is_enrolled === true)
-    if (data.role === 'LECTURER') enrolledCourse = courseData.filter(c => c.lecturer.id === data.id)
+    if (data?.role === 'STUDENT') enrolledCourse = courseData.filter(c => c.is_enrolled === true)
+    if (data?.role === 'LECTURER') enrolledCourse = courseData.filter(c => c.lecturer.id === data.id)
+    else enrolledCourse = courseData
+    console.log('enrolledCourse', enrolledCourse)
     return (
         <FlatList
             data={enrolledCourse}

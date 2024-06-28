@@ -109,7 +109,7 @@ function Class() {
         <SafeScreen>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={{ color: '#004aad', fontWeight: '700', fontSize: 28, margin: 10 }}>Mata Kuliah</Text>
-                {(data.role === 'LECTURER' || data.role === 'ADMIN') &&
+                {(data?.role === 'LECTURER' || data?.role === 'ADMIN') &&
                     <TouchableOpacity
                         accessibilityRole="button"
                         onPress={() => {

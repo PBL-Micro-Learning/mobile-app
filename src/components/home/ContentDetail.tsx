@@ -11,6 +11,8 @@ import { IContent, ICourseData, ILesson } from './HomeList';
 import WebView from 'react-native-webview'
 import { useAuthStore } from '@/store/auth';
 import CreateContent from './CreateContent';
+import Icon from 'react-native-vector-icons/Entypo';
+
 
 function ContentDetail() {
     const { course, lesson, content, setMode, setCourseData, setContentData }: { course: ICourseData, lesson: ILesson, content: IContent, setMode: (data: any) => void, setCourseData: (data: any) => void, setContentData: (data: any) => void } = useCourseStore()
@@ -76,10 +78,11 @@ function ContentDetail() {
         })
         const json = await response.json()
         console.log('submit like', json)
-        if (response.status === 200) {
+        if (response.status) {
             Alert.alert('Like berhasil ditambahkan!')
+            getContentDetail(content)
         }
-        if (response.status === 400) Alert.alert('Like gagal ditambahkan!')
+        if (!response.status) Alert.alert('Like gagal ditambahkan!')
     };
 
     const onPressWatch = async () => {
@@ -94,10 +97,6 @@ function ContentDetail() {
         })
         const json = await response.json()
         console.log('submit watch', json)
-        if (response.status === 200) {
-            Alert.alert('Watch berhasil ditambahkan!')
-        }
-        if (response.status === 400) Alert.alert('Watch gagal ditambahkan!')
     };
 
     const handleAnswerQuiz = (questionIdx: number, answerIdx: string) => {
@@ -124,8 +123,8 @@ function ContentDetail() {
     }
 
     useEffect(() => {
-        if (data.role === 'STUDENT') onPressWatch()
-    }, [data.role])
+        if (data?.role === 'STUDENT') onPressWatch()
+    }, [data?.role])
 
     console.log('content', content)
     console.log('contentDetail data', data)
@@ -148,16 +147,9 @@ function ContentDetail() {
                 {/* <ImageVariant source={{ uri: course.cover_url }} style={{ width: '100%', height: 90, borderRadius: 20 }} /> */}
                 <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>{content.title}</Text>
                 <View style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 10 }}>
-                    <Button
-                        onPress={onPressLike}
-                        title="Suka"
-                        color={'#004aad'}
-                    />
-                    {/* <Button
-                        onPress={onPressWatch}
-                        title="Tandai Sudah Menonton"
-                        color={'#004aad'}
-                    /> */}
+                    <Icon size={30} name='thumbs-up' onPress={onPressLike} color={content.likes ? '#004aad' : "gray"} />
+                    <Text>Likes : {content.likes_count}</Text>
+                    <Text>Liked : {content.likes ? 'true' : 'false'}</Text>
                 </View>
                 {/* <Text style={{ fontWeight: '700', fontSize: 16, marginVertical: 8 }}>Lesson: {lesson.title}</Text>
             <Text style={{ fontWeight: '400', fontSize: 14, marginVertical: 2 }}>{lesson.description}</Text> */}

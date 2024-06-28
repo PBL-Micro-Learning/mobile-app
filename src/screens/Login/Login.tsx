@@ -99,7 +99,7 @@ function Login({ navigation }: any) {
 							style={[
 								gutters.marginVertical_12,
 								gutters.padding_12,
-								{ height: 40, borderWidth: 1 },
+								{ height: 40, borderWidth: 1, color: 'black' },
 							]}
 							onChangeText={onChangeEmail}
 							value={email}
@@ -109,7 +109,7 @@ function Login({ navigation }: any) {
 							style={[
 								gutters.marginVertical_12,
 								gutters.padding_12,
-								{ height: 40, borderWidth: 1 },
+								{ height: 40, borderWidth: 1, color: 'black' },
 							]}
 							onChangeText={onChangePassword}
 							value={password}
