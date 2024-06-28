@@ -124,11 +124,11 @@ const HomeListItem = (data: IHomeListItem) => {
                         <Text style={{ fontWeight: '700', fontSize: 16 }}>{data.name}</Text>
                         <Text style={{ fontWeight: '400', fontSize: 12 }}>{data.description}</Text>
                         <Text style={{ fontWeight: '400', fontSize: 14 }}>{data.lecturer.name}</Text>
-                        {/* {data?.progress?.percentage &&
+                        {data?.progress?.percentage ?
                             <View style={{ display: 'flex', justifyContent: 'center', width: `${data.progress.percentage}%`, backgroundColor: "green", height: 20 }}>
-                                <Text style={{ fontWeight: '700', fontSize: 12, marginLeft: 4, color: 'white' }}>{data.progress.percentage}%</Text>
-                            </View>
-                        } */}
+                                <Text style={{ fontWeight: '700', fontSize: 8, marginLeft: 4, color: 'white' }}>{data.progress.percentage}%</Text>
+                            </View> : null
+                        }
                     </View>
                 </View>
             </TouchableOpacity>

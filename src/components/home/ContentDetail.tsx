@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FlatList, TextInput } from 'react-native-gesture-handler'
 import { ImageVariant } from '../atoms'
 import Logo from '@/theme/assets/images/microlearning.png';
@@ -122,6 +122,11 @@ function ContentDetail() {
         }
         return 'aETL4vduQfs'
     }
+
+    useEffect(() => {
+        if (data.role === 'STUDENT') onPressWatch()
+    }, [data.role])
+
     console.log('content', content)
     console.log('contentDetail data', data)
     return (
@@ -148,11 +153,11 @@ function ContentDetail() {
                         title="Suka"
                         color={'#004aad'}
                     />
-                    <Button
+                    {/* <Button
                         onPress={onPressWatch}
                         title="Tandai Sudah Menonton"
                         color={'#004aad'}
-                    />
+                    /> */}
                 </View>
                 {/* <Text style={{ fontWeight: '700', fontSize: 16, marginVertical: 8 }}>Lesson: {lesson.title}</Text>
             <Text style={{ fontWeight: '400', fontSize: 14, marginVertical: 2 }}>{lesson.description}</Text> */}
@@ -173,25 +178,25 @@ function ContentDetail() {
                 })}
             </View> */}
 
-                {data.role === 'STUDENT' &&
-                    <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
-                        <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Diskusi</Text>
-                        <FlatList
-                            nestedScrollEnabled
-                            data={content.comments}
-                            keyExtractor={(item, index) => "comment-" + index}
-                            renderItem={({ item, index }) =>
-                                <View style={{ paddingHorizontal: 20 }}>
-                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                                        <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{item.user.name}</Text>
-                                        <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 8 }}>{`${new Date(item.date).getUTCDate()}-${new Date(item.date).getUTCMonth()}-${new Date(item.date).getUTCFullYear()} ${new Date(item.date).getHours()}:${new Date(item.date).getMinutes()}:${new Date(item.date).getSeconds()}`}</Text>
-                                    </View>
-                                    <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 0 }}>{item.content}</Text>
+                <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
+                    <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Diskusi</Text>
+                    <FlatList
+                        nestedScrollEnabled
+                        data={content.comments}
+                        keyExtractor={(item, index) => "comment-" + index}
+                        renderItem={({ item, index }) =>
+                            <View style={{ paddingHorizontal: 20 }}>
+                                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                                    <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{item.user.name}</Text>
+                                    <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 8 }}>{`${new Date(item.date).getUTCDate()}-${new Date(item.date).getUTCMonth()}-${new Date(item.date).getUTCFullYear()} ${new Date(item.date).getHours()}:${new Date(item.date).getMinutes()}:${new Date(item.date).getSeconds()}`}</Text>
                                 </View>
-                            }
-                            scrollEnabled={true}
-                            style={{ height: 100 }}
-                        />
+                                <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 0 }}>{item.content}</Text>
+                            </View>
+                        }
+                        scrollEnabled={true}
+                        style={{ height: 100 }}
+                    />
+                    <>
                         <TextInput
                             style={{ width: '100%', marginVertical: 12, padding: 12, height: 40, borderWidth: 1 }}
                             onChangeText={(e) => setDiscussion(e)}
@@ -205,8 +210,8 @@ function ContentDetail() {
                                 color={'#004aad'}
                             />
                         </View>
-                    </View>
-                }
+                    </>
+                </View>
 
             </>
             {/* <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>

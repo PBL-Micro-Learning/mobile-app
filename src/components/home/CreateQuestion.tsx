@@ -109,7 +109,7 @@ function CreateQuestion() {
             })
             const json = await response.json()
             console.log('create questions', json)
-            if (response.status === 200) {
+            if (response.status) {
                 Alert.alert('Buat Questions Berhasil')
                 getLessonDetail(lesson)
                 onChangeName('')
@@ -119,7 +119,7 @@ function CreateQuestion() {
                 setOpsiD('')
                 setKeyAnswer('')
             }
-            if (response.status === 400) Alert.alert('Gagal membuat Questions')
+            if (!response.status) Alert.alert('Gagal membuat Questions')
 
         } catch (error) {
             Alert.alert('Gagal membuat Questions')
