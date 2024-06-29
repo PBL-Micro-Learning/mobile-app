@@ -39,15 +39,15 @@ function HomeListDetail() {
     return (
         <ScrollView>
             <ImageVariant source={{ uri: course?.cover_url }} style={{ width: '100%', height: 90, borderRadius: 20 }} />
-            <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>{course.name}</Text>
+            <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>{course?.name}</Text>
             <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
                 <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Detail Materi</Text>
-                <Text style={{ fontWeight: '400', fontSize: 20, marginVertical: 8 }}>{course.description}</Text>
+                <Text style={{ fontWeight: '400', fontSize: 20, marginVertical: 8 }}>{course?.description}</Text>
             </View>
             <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
                 <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Materi</Text>
                 {course?.progress?.total_contents &&
-                    <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {course.progress.total_contents}</Text>
+                    <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {course?.progress.total_contents}</Text>
                 }
                 {course?.lessons?.map((l, lIdx) => {
                     return <View key={`lesson-${lIdx}`} style={{ paddingVertical: 20, paddingHorizontal: 10, width: '100%', borderWidth: 1, borderColor: 'black' }}>

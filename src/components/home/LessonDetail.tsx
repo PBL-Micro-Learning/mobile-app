@@ -72,20 +72,20 @@ function LessonDetail() {
     }
 
     useLayoutEffect(() => {
-        if (lesson.quiz_id) getQuizById(lesson.quiz_id)
-    }, [lesson.quiz_id])
+        if (lesson?.quiz_id) getQuizById(lesson?.quiz_id)
+    }, [lesson?.quiz_id])
 
     return (
         <ScrollView>
-            <ImageVariant source={{ uri: course.cover_url }} style={{ width: '100%', height: 90, borderRadius: 20 }} />
-            <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>{course.name}</Text>
-            <Text style={{ fontWeight: '700', fontSize: 16, marginVertical: 8 }}>Lesson: {lesson.title}</Text>
-            <Text style={{ fontWeight: '400', fontSize: 14, marginVertical: 2 }}>{lesson.description}</Text>
+            <ImageVariant source={{ uri: course?.cover_url }} style={{ width: '100%', height: 90, borderRadius: 20 }} />
+            <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>{course?.name}</Text>
+            <Text style={{ fontWeight: '700', fontSize: 16, marginVertical: 8 }}>Lesson: {lesson?.title}</Text>
+            <Text style={{ fontWeight: '400', fontSize: 14, marginVertical: 2 }}>{lesson?.description}</Text>
 
             <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
                 <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Materi</Text>
                 {lesson?.progress?.total_contents &&
-                    <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {lesson.progress.total_contents}</Text>
+                    <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {lesson?.progress.total_contents}</Text>
                 }
                 {lesson?.contents?.length > 0 && lesson?.contents?.map((c, lIdx) => {
                     return <View key={`lesson-${lIdx}`} style={{ paddingVertical: 20, paddingHorizontal: 10, width: '100%', borderWidth: 1, borderColor: 'black' }}>
@@ -126,7 +126,7 @@ function LessonDetail() {
             {data?.role === 'LECTURER' &&
                 <>
                     <CreateContent />
-                    {!lesson.quiz_id ?
+                    {!lesson?.quiz_id ?
                         <CreateQuiz />
                         : <CreateQuestion />
                     }

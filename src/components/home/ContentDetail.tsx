@@ -23,7 +23,7 @@ function ContentDetail() {
 
     const getContentDetail = async (data: IContent) => {
         try {
-            const response = await fetch(`${API_URL}/contents/${data.id}`, {
+            const response = await fetch(`${API_URL}/contents/${data?.id}`, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -43,8 +43,8 @@ function ContentDetail() {
         }
     };
     const onPressSubmitDiscussion = async () => {
-        console.log('submit discussion', `${API_URL}/contents/${content.id}/comment`)
-        const response = await fetch(`${API_URL}/contents/${content.id}/comment`, {
+        console.log('submit discussion', `${API_URL}/contents/${content?.id}/comment`)
+        const response = await fetch(`${API_URL}/contents/${content?.id}/comment`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -67,8 +67,8 @@ function ContentDetail() {
     };
 
     const onPressLike = async () => {
-        console.log('submit like', `${API_URL}/contents/${content.id}/like`)
-        const response = await fetch(`${API_URL}/contents/${content.id}/like`, {
+        console.log('submit like', `${API_URL}/contents/${content?.id}/like`)
+        const response = await fetch(`${API_URL}/contents/${content?.id}/like`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -86,8 +86,8 @@ function ContentDetail() {
     };
 
     const onPressWatch = async () => {
-        console.log('submit watch', `${API_URL}/contents/${content.id}/watch`)
-        const response = await fetch(`${API_URL}/contents/${content.id}/watch`, {
+        console.log('submit watch', `${API_URL}/contents/${content?.id}/watch`)
+        const response = await fetch(`${API_URL}/contents/${content?.id}/watch`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -140,16 +140,16 @@ function ContentDetail() {
                         }}
                         javaScriptEnabled={true}
                         domStorageEnabled={true}
-                        // source={{ uri: 'https://www.youtube.com/embed/' + getYoutubeID(content.video_url) }}
-                        source={{ uri: `${content.video_url}?controls=0&showinfo=0&wmode=transparent&rel=0&mode=opaque` }}
+                        // source={{ uri: 'https://www.youtube.com/embed/' + getYoutubeID(content?.video_url) }}
+                        source={{ uri: `${content?.video_url}?controls=0&showinfo=0&wmode=transparent&rel=0&mode=opaque` }}
                     />
                 </View>
                 {/* <ImageVariant source={{ uri: course.cover_url }} style={{ width: '100%', height: 90, borderRadius: 20 }} /> */}
-                <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>{content.title}</Text>
+                <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>{content?.title}</Text>
                 <View style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 10 }}>
-                    <Icon size={30} name='thumbs-up' onPress={onPressLike} color={content.likes ? '#004aad' : "gray"} />
-                    <Text>Likes : {content.likes_count}</Text>
-                    <Text>Liked : {content.likes ? 'true' : 'false'}</Text>
+                    <Icon size={30} name='thumbs-up' onPress={onPressLike} color={content?.likes ? '#004aad' : "gray"} />
+                    <Text>Likes : {content?.likes_count}</Text>
+                    <Text>Liked : {content?.likes ? 'true' : 'false'}</Text>
                 </View>
                 {/* <Text style={{ fontWeight: '700', fontSize: 16, marginVertical: 8 }}>Lesson: {lesson.title}</Text>
             <Text style={{ fontWeight: '400', fontSize: 14, marginVertical: 2 }}>{lesson.description}</Text> */}
@@ -174,7 +174,7 @@ function ContentDetail() {
                     <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Diskusi</Text>
                     <FlatList
                         nestedScrollEnabled
-                        data={content.comments}
+                        data={content?.comments}
                         keyExtractor={(item, index) => "comment-" + index}
                         renderItem={({ item, index }) =>
                             <View style={{ paddingHorizontal: 20 }}>
