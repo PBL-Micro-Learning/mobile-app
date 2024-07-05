@@ -1,1 +1,1 @@
-export const API_URL='https://pbl-micro-learling.up.railway.app/api'
+export const API_URL='https://micro-learning.up.railway.app/api'
