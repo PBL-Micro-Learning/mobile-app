@@ -36,7 +36,7 @@ function LessonDetail() {
             },
         })
         const json = await response.json()
-        console.log('quiz by id', json.data)
+        console.log('quiz by id inside lesson detail', json.data)
         if (response.status) {
             setQuiz(json.data)
             // Alert.alert('Diskusi berhasil ditambahkan!')
@@ -86,11 +86,11 @@ function LessonDetail() {
             <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>{course?.name}</Text>
             <Text style={{ fontWeight: '700', fontSize: 16, marginVertical: 8 }}>Lesson: {lesson?.title}</Text>
             <Text style={{ fontWeight: '400', fontSize: 14, marginVertical: 2 }}>{lesson?.description}</Text>
-
             <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
                 <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Materi</Text>
-                {lesson?.progress?.total_contents &&
+                {lesson?.progress?.total_contents ?
                     <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {lesson?.progress.total_contents}</Text>
+                    : null
                 }
                 {lesson?.contents?.length > 0 && lesson?.contents?.map((c, lIdx) => {
                     return <View key={`lesson-${lIdx}`} style={{ paddingVertical: 20, paddingHorizontal: 10, width: '100%', borderWidth: 1, borderColor: 'black' }}>
@@ -155,7 +155,7 @@ function LessonDetail() {
                 <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>Quiz: {quiz?.description}</Text>
                 <View style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
                     {quiz?.questions?.map((item: any, index: number) => <View key={`quiz-${index}`} style={{ paddingHorizontal: 20 }}>
-                        <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{index + 1}. {item.content}</Text>
+                        <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{index + 1}. {item?.content}</Text>
                     </View>)}
                 </View>
                 {data?.role === 'STUDENT' &&
@@ -177,13 +177,6 @@ function LessonDetail() {
                         </View>)}
                     </View>
                 }
-                {/* <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <Button
-                        onPress={onPressSubmitDiscussion}
-                        title="Kirim"
-                        color={'#004aad'}
-                    />
-                </View> */}
             </View>
 
             {data?.role === "STUDENT" && lesson?.quiz_id &&
@@ -192,10 +185,9 @@ function LessonDetail() {
             }
             {data?.role === 'LECTURER' && !editMode && <CreateContent />}
             {data?.role === 'LECTURER' && editMode && <EditContent contentId={contentId} setEditMode={setEditMode} />}
-            {data?.role === 'LECTURER' && !lesson?.quiz_id ?
-                <CreateQuiz />
-                : <CreateQuestion />
-            }
+            {data?.role === 'LECTURER' && !lesson?.quiz_id && <CreateQuiz />}
+            {data?.role === 'LECTURER' && lesson?.quiz_id && <CreateQuestion />}
+
 
             <View style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: 50 }}>
                 <Button

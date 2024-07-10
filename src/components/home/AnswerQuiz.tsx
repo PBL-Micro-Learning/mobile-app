@@ -71,6 +71,8 @@ function AnswerQuiz() {
 
 
     const getQuizById = async (id: number) => {
+        console.log('getQuizById', id, `${API_URL}/quizzes/${id}/questions`)
+        // /quizzes/5/questions
         const response = await fetch(`${API_URL}/quizzes/${id}/questions`, {
             method: 'GET',
             headers: {
@@ -80,21 +82,21 @@ function AnswerQuiz() {
             },
         })
         const json = await response.json()
-        console.log('quiz by id', json.data)
-        if (response.status === 200) {
+        console.log('quiz by id inside answer quiz', json)
+        if (response.status) {
             setQuiz(json.data)
             setOptions(json.data.options)
             // Alert.alert('Diskusi berhasil ditambahkan!')
         }
-        if (response.status === 400) Alert.alert('Quiz gagal dibaca!')
+        if (!response.status) Alert.alert('Quiz gagal dibaca!')
     };
     console.log('quiz', quiz)
     const onSubmitAnswer = async () => {
         try {
             console.log('jawaban', answer)
-            console.log(`quiz_id`, quiz.id)
+            console.log(`quiz_id`, quiz?.id)
             setLoading(true)
-            const response = await fetch(`${API_URL}/questions/${quiz.id}/answer`, {
+            const response = await fetch(`${API_URL}/questions/${quiz?.id}/answer`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -128,65 +130,67 @@ function AnswerQuiz() {
     // }
 
     useEffect(() => {
-        if (lesson.quiz_id) getQuizById(lesson.quiz_id)
-    }, [lesson.quiz_d])
+        if (lesson?.quiz_id) getQuizById(lesson?.quiz_id)
+    }, [lesson?.quiz_d])
 
     console.log('answer', answer)
     return (
         <SafeScreen>
-            <View style={{ borderWidth: 1, borderColor: 'black', paddingVertical: 20 }}>
-                {!loading ?
-                    <ScrollView>
-                        <View style={[gutters.paddingHorizontal_32]}>
-                            <View style={[layout.justifyCenter]}>
-                                <Text style={{ fontWeight: '700' }}>{quiz?.content ?? '-'}</Text>
-                                <SelectDropdown
-                                    buttonStyle={[
-                                        gutters.marginVertical_12,
-                                        layout.fullWidth,
-                                        { height: 40, borderWidth: 1 },
-                                    ]}
-                                    data={options}
-                                    defaultButtonText="Select Answer"
-                                    onSelect={(selectedItem, index) => {
-                                        console.log(selectedItem, index);
-                                        onChangeAnswer(selectedItem.mark)
-                                    }}
-                                    buttonTextAfterSelection={(selectedItem, index) => {
-                                        // text represented after item is selected
-                                        // if data array is an array of objects then return selectedItem.property to render after item is selected
-                                        console.log('selectedItem', selectedItem)
-                                        return `${selectedItem.mark}. ${selectedItem.content}`;
-                                    }}
-                                    rowTextForSelection={(item, index) => {
-                                        // text represented for each item in dropdown
-                                        // if data array is an array of objects then return item.property to represent item in dropdown
-                                        return `${item.mark}. ${item.content}`;
-                                    }}
-                                />
-                            </View>
+            {options?.length > 1 &&
+                <View style={{ borderWidth: 1, borderColor: 'black', paddingVertical: 20 }}>
+                    {!loading ?
+                        <ScrollView>
+                            <View style={[gutters.paddingHorizontal_32]}>
+                                <View style={[layout.justifyCenter]}>
+                                    <Text style={{ fontWeight: '700' }}>{quiz?.content ?? '-'}</Text>
+                                    <SelectDropdown
+                                        buttonStyle={[
+                                            gutters.marginVertical_12,
+                                            layout.fullWidth,
+                                            { height: 40, borderWidth: 1 },
+                                        ]}
+                                        data={options}
+                                        defaultButtonText="Select Answer"
+                                        onSelect={(selectedItem, index) => {
+                                            console.log(selectedItem, index);
+                                            onChangeAnswer(selectedItem.mark)
+                                        }}
+                                        buttonTextAfterSelection={(selectedItem, index) => {
+                                            // text represented after item is selected
+                                            // if data array is an array of objects then return selectedItem.property to render after item is selected
+                                            console.log('selectedItem', selectedItem)
+                                            return `${selectedItem.mark}. ${selectedItem.content}`;
+                                        }}
+                                        rowTextForSelection={(item, index) => {
+                                            // text represented for each item in dropdown
+                                            // if data array is an array of objects then return item.property to represent item in dropdown
+                                            return `${item.mark}. ${item.content}`;
+                                        }}
+                                    />
+                                </View>
 
-                            <View
-                                style={[
-                                    layout.justifyCenter,
-                                    layout.fullWidth,
-                                    gutters.marginTop_16,
-                                    { gap: 10 }
-                                ]}
-                            >
-                                <Button
-                                    disabled={answer === ''}
-                                    onPress={onSubmitAnswer}
-                                    title="Kirim Jawaban"
-                                    color={'#004aad'}
-                                    accessibilityLabel="Kirim Jawaban"
-                                />
+                                <View
+                                    style={[
+                                        layout.justifyCenter,
+                                        layout.fullWidth,
+                                        gutters.marginTop_16,
+                                        { gap: 10 }
+                                    ]}
+                                >
+                                    <Button
+                                        disabled={answer === ''}
+                                        onPress={onSubmitAnswer}
+                                        title="Kirim Jawaban"
+                                        color={'#004aad'}
+                                        accessibilityLabel="Kirim Jawaban"
+                                    />
+                                </View>
                             </View>
-                        </View>
-                    </ScrollView>
-                    : <View style={{ padding: 20 }}><Text style={{ textAlign: 'center' }}>Loading new quiz...</Text></View>
-                }
-            </View>
+                        </ScrollView>
+                        : <View style={{ padding: 20 }}><Text style={{ textAlign: 'center' }}>Loading new quiz...</Text></View>
+                    }
+                </View>
+            }
         </SafeScreen>
     );
 }
