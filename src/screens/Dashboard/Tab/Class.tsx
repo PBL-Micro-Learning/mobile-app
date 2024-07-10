@@ -30,15 +30,16 @@ import { useAuthStore } from "@/store/auth";
 import ClassList from "@/components/class/ClassList";
 import { useIsFocused } from "@react-navigation/native";
 import CreateClass from "@/components/class/CreateClass";
+import EditClass from "@/components/class/EditClass";
 const genders = ["Pria", "Wanita"];
 
 function Class() {
     const categories = ['All', 'Matkul 1', 'Matkul 2', 'Matkul 3']
     const isFocused = useIsFocused()
     const { token, data } = useAuthStore()
-    const [mode, setMode] = useState<"create" | "view">('view');
+    const [mode, setMode] = useState<"create" | "edit" | "view">('view');
     const [courses, setCourses] = useState([]);
-    const [email, onChangeEmail] = useState("");
+    const [classId, setClassId] = useState(0);
     const [password, onChangePassword] = useState("");
     const {
         colors,
@@ -101,7 +102,7 @@ function Class() {
         }
     };
     useEffect(() => {
-        console.log('auth data', data)
+        console.log('classes data', courses)
         getCourses()
     }, [isFocused, mode])
 
@@ -115,6 +116,7 @@ function Class() {
                         onPress={() => {
                             if (mode === 'view') setMode('create')
                             if (mode === 'create') setMode('view')
+                            if (mode === 'edit') setMode('view')
                         }
                         }
                         style={{ flex: 1 }}
@@ -125,10 +127,9 @@ function Class() {
                     </TouchableOpacity>
                 }
             </View>
-            {mode === 'view' ?
-                <ClassList courseData={courses} getCourses={getCourses} />
-                : <CreateClass />
-            }
+            {mode === 'view' && <ClassList courseData={courses} getCourses={getCourses} setMode={setMode} setClassId={setClassId} />}
+            {mode === 'edit' && <EditClass classId={classId} />}
+            {mode === 'create' && <CreateClass />}
         </SafeScreen>
     );
 }

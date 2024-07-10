@@ -55,26 +55,32 @@ function Login({ navigation }: any) {
 	});
 
 	const onPressLogin = async () => {
-		const response = await fetch(`${API_URL}/auth/login`, {
-			method: 'POST',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				email,
-				password
-			}),
-		})
-		const json = await response.json()
-		console.log('login', json.data)
-		if (response.status === 200) {
-			Alert.alert('Login Success!')
-			setAuthToken(json.data.token)
-			setAuthData(json.data)
-			navigation.navigate('Dashboard')
+		try {
+			console.log('API_URL', API_URL)
+			const response = await fetch(`${API_URL}/auth/login`, {
+				method: 'POST',
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					email,
+					password
+				}),
+			})
+			console.log('response login', response)
+			const json = await response.json()
+			console.log('login', json.data)
+			if (response.status) {
+				Alert.alert('Login Success!')
+				setAuthToken(json.data.token)
+				setAuthData(json.data)
+				navigation.navigate('Dashboard')
+			}
+			if (!response.status) Alert.alert('Login Failed!')
+		} catch (error) {
+			Alert.alert('Login Failed!')
 		}
-		if (response.status === 400) Alert.alert('Login Failed!')
 	};
 
 	console.log('token', token);

@@ -65,7 +65,7 @@ function SearchList({ search, data }: SearchProps) {
     return (
         <FlatList
             data={data}
-            keyExtractor={(item, index) => "List-" + index}
+            keyExtractor={(item, index) => "List-" + index + item.name}
             renderItem={({ item, index }) => <SearchListItem index={index} {...item} />}
 
             scrollEnabled={true}

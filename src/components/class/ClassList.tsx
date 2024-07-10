@@ -10,14 +10,16 @@ import { API_URL } from '@/const';
 interface ClassProps {
     courseData: ICourseData[]
     getCourses: () => void
+    setMode: any
+    setClassId: any
 }
 interface IClassListItem extends ICourseData {
     index: number
 }
 
-const ClassListItem = ({ data, getCourses }: { data: ICourseData, getCourses: () => void }) => {
+const ClassListItem = ({ data, getCourses, setMode, setClassId }: { data: ICourseData, getCourses: () => void, setMode: any, setClassId: any }) => {
     console.log('data', data)
-    const { token } = useAuthStore()
+    const { token, data: authData } = useAuthStore()
     const onPressSubmitEnroll = async (id: number) => {
         console.log('submit enroll', `${API_URL}/courses/${id}/enroll`)
         const response = await fetch(`${API_URL}/courses/${id}/enroll`, {
@@ -44,32 +46,41 @@ const ClassListItem = ({ data, getCourses }: { data: ICourseData, getCourses: ()
             shadowRadius: 4,
         }}>
             <TouchableOpacity
-                onPress={() => Alert.alert(
-                    'Enroll to this course?',
-                    `${data.name}`,
-                    [
-                        {
-                            text: 'Ok',
-                            onPress: () => {
-                                onPressSubmitEnroll(data.id)
-                            }
-                            ,
-                            style: 'cancel',
-                        },
-                        {
-                            text: 'Cancel',
-                            onPress: () => Alert.alert('Cancel Pressed'),
-                            style: 'cancel',
-                        },
-                    ],
-                    {
-                        cancelable: true,
-                        onDismiss: () =>
+                onPress={
+                    () => {
+                        if (authData?.role === 'LECTURER') {
+                            setMode('edit')
+                            setClassId(data?.id)
+                        }
+                        else if (authData?.role === 'STUDENT') {
                             Alert.alert(
-                                'This alert was dismissed by tapping outside of the alert dialog.',
-                            ),
-                    },
-                )}
+                                'Enroll to this course?',
+                                `${data.name}`,
+                                [
+                                    {
+                                        text: 'Ok',
+                                        onPress: () => {
+                                            onPressSubmitEnroll(data.id)
+                                        }
+                                        ,
+                                        style: 'cancel',
+                                    },
+                                    {
+                                        text: 'Cancel',
+                                        onPress: () => Alert.alert('Cancel Pressed'),
+                                        style: 'cancel',
+                                    },
+                                ],
+                                {
+                                    cancelable: true,
+                                    onDismiss: () =>
+                                        Alert.alert(
+                                            'This alert was dismissed by tapping outside of the alert dialog.',
+                                        ),
+                                },
+                            )
+                        }
+                    }}
             >
                 <View
 
@@ -107,13 +118,13 @@ const ClassListItem = ({ data, getCourses }: { data: ICourseData, getCourses: ()
         </DropShadow >
     )
 }
-function ClassList({ courseData, getCourses }: ClassProps) {
+function ClassList({ courseData, getCourses, setMode, setClassId }: ClassProps) {
     console.log('courseData', courseData)
     return (
         <FlatList
             data={courseData}
-            keyExtractor={(item, index) => "List-" + index}
-            renderItem={({ item }) => <ClassListItem data={item} getCourses={getCourses} {...item} />}
+            keyExtractor={(item, index) => "List-" + index + item.name}
+            renderItem={({ item }) => <ClassListItem data={item} getCourses={getCourses} setMode={setMode} setClassId={setClassId} {...item} />}
 
             scrollEnabled={true}
         />

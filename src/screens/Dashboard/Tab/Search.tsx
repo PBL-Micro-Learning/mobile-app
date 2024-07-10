@@ -29,6 +29,7 @@ import { API_URL } from "@/const";
 import { useAuthStore } from "@/store/auth";
 import SearchList from "@/components/search/SearchList";
 import useDebounce from "@/theme/hooks/useDebounce";
+import { useIsFocused } from "@react-navigation/native";
 const genders = ["Pria", "Wanita"];
 
 const dummyData = [
@@ -57,6 +58,7 @@ function Search() {
     const [listData, setListData] = useState([])
     const [password, onChangePassword] = useState("");
     const debouncedValue = useDebounce(search, 500);
+    const isFocused = useIsFocused()
 
     const {
         colors,
@@ -112,7 +114,7 @@ function Search() {
 
     useEffect(() => {
         getCourses()
-    }, [])
+    }, [isFocused])
 
     return (
         <SafeScreen>

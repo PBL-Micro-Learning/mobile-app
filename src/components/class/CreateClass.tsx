@@ -26,6 +26,7 @@ function CreateClass() {
     const { token, setAuthToken, setAuthData } = useAuthStore()
     const [name, onChangeName] = useState("");
     const [description, onChangeDescription] = useState("");
+    const [coverUrl, onChangeCoverUrl] = useState("");
     const {
         colors,
         variant,
@@ -44,20 +45,23 @@ function CreateClass() {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     name,
-                    description
+                    description,
+                    cover_url: coverUrl
                 }),
             })
             const json = await response.json()
             console.log('create class', json)
-            if (response.status === 200) {
+            if (response.status) {
                 Alert.alert('Buat Kelas Berhasil')
                 onChangeName('')
                 onChangeDescription('')
+                onChangeCoverUrl('')
             }
-            if (response.status === 400) Alert.alert('Gagal membuat kelas')
+            if (!response.status) Alert.alert('Gagal membuat kelas')
 
         } catch (error) {
             Alert.alert('Gagal membuat kelas')
@@ -88,6 +92,16 @@ function CreateClass() {
                             onChangeText={onChangeDescription}
                             value={description}
                             placeholder="Deskripsi"
+                        />
+                        <TextInput
+                            style={[
+                                gutters.marginVertical_12,
+                                gutters.padding_12,
+                                { height: 40, borderWidth: 1 },
+                            ]}
+                            onChangeText={onChangeCoverUrl}
+                            value={coverUrl}
+                            placeholder="Cover Url"
                         />
                     </View>
 

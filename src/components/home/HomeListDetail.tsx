@@ -9,32 +9,38 @@ import { API_URL } from '@/const';
 import { useAuthStore } from '@/store/auth';
 import { ICourseData } from './HomeList';
 import CreateLesson from './CreateLesson';
+import EditLesson from './EditLesson';
 
 function HomeListDetail() {
     const { course }: { course: ICourseData } = useCourseStore()
     const { token, data } = useAuthStore()
+    const [lessonId, setLessonId] = useState(0)
+    const [editMode, setEditMode] = useState(false)
     console.log('course detail', course)
 
 
     const { setMode, setLessonData } = useCourseStore()
-    const [discussion, setDiscussion] = useState('')
-    const onPressSubmitDiscussion = async () => {
-        const response = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: discussion,
-            }),
-        })
-        const json = await response.json()
-        console.log('login', json.data)
-        if (response.status === 200) {
-            Alert.alert('Diskusi berhasil ditambahkan!')
+    const onSubmitDeleteLesson = async (lessonId: number) => {
+        try {
+            const response = await fetch(`${API_URL}/lessons/${lessonId}`, {
+                method: 'DELETE',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+            const json = await response.json()
+            console.log('delete lesson', json)
+            if (response.status) {
+                Alert.alert('Hapus Materi Berhasil')
+                setMode('LIST')
+            }
+            if (!response.status) Alert.alert('Gagal menghapus materi')
+
+        } catch (error) {
+            Alert.alert('Gagal menghapus materi')
         }
-        if (response.status === 400) Alert.alert('Diskusi gagal ditambahkan!')
     };
     return (
         <ScrollView>
@@ -49,7 +55,7 @@ function HomeListDetail() {
                 {course?.progress?.total_contents &&
                     <Text style={{ fontWeight: '700', fontSize: 20, marginVertical: 8 }}>Total Video: {course?.progress.total_contents}</Text>
                 }
-                {course?.lessons?.map((l, lIdx) => {
+                {course?.lessons?.[0]?.title && course?.lessons?.map((l, lIdx) => {
                     return <View key={`lesson-${lIdx}`} style={{ paddingVertical: 20, paddingHorizontal: 10, width: '100%', borderWidth: 1, borderColor: 'black' }}>
                         <TouchableOpacity onPress={() => {
                             console.log('HomeListDetail data', l)
@@ -64,13 +70,62 @@ function HomeListDetail() {
                                 </View> : null
                             }
                         </TouchableOpacity>
+                        {data?.role === 'LECTURER' &&
+                            <View style={{ marginTop: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Button
+                                    onPress={() => {
+                                        Alert.alert(
+                                            'Apakah kamu yakin untuk menghapus materi ini?',
+                                            `${l.title} - ${l.id}`,
+                                            [
+                                                {
+                                                    text: 'Ok',
+                                                    onPress: () => {
+                                                        onSubmitDeleteLesson(l.id)
+                                                    }
+                                                    ,
+                                                    style: 'cancel',
+                                                },
+                                                {
+                                                    text: 'Cancel',
+                                                    onPress: () => Alert.alert('Cancel Pressed'),
+                                                    style: 'cancel',
+                                                },
+                                            ],
+                                            {
+                                                cancelable: true,
+                                                onDismiss: () =>
+                                                    Alert.alert(
+                                                        'This alert was dismissed by tapping outside of the alert dialog.',
+                                                    ),
+                                            },
+                                        )
+                                    }}
+                                    title="Hapus"
+                                    color={'#800000'}
+                                />
+                                <Button
+                                    onPress={() => {
+                                        setEditMode(true)
+                                        setLessonId(l?.id)
+                                    }
+                                    }
+                                    title="Edit"
+                                    color={'#004aad'}
+                                />
+                            </View>
+                        }
                     </View>
                 })}
             </View>
-            {data?.role === 'LECTURER' && <CreateLesson />}
+            {data?.role === 'LECTURER' && !editMode && <CreateLesson />}
+            {data?.role === 'LECTURER' && editMode && <EditLesson lessonId={lessonId} setEditMode={setEditMode} />}
             <View style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: 50 }}>
                 <Button
-                    onPress={() => setMode('LIST')}
+                    onPress={() => {
+                        setMode('LIST')
+                    }
+                    }
                     title="Kembali"
                     color={'#004aad'}
                 />

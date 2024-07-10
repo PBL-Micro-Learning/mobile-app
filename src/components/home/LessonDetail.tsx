@@ -13,6 +13,7 @@ import CreateQuiz from './CreateQuiz';
 import AnswerQuiz from './AnswerQuiz';
 import CreateContent from './CreateContent';
 import CreateQuestion from './CreateQuestion';
+import EditContent from './EditContent';
 
 function LessonDetail() {
     const { data, token } = useAuthStore()
@@ -22,10 +23,11 @@ function LessonDetail() {
     const dummyQuiz = [
         { content: 'Test Question', option: [{ content: 'A', is_correct: false }, { content: 'B', is_correct: false }, { content: 'C', is_correct: false }, { content: 'D', is_correct: true }] }
     ]
-    const [discussion, setDiscussion] = useState('')
+    const [contentId, setContentId] = useState(0)
+    const [editMode, setEditMode] = useState(false)
     const [quiz, setQuiz] = useState<any>(dummyQuiz)
     const getQuizById = async (id: number) => {
-        const response = await fetch(`${API_URL}/quizzes/${id}/questions`, {
+        const response = await fetch(`${API_URL}/quizzes/${id}`, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -35,31 +37,34 @@ function LessonDetail() {
         })
         const json = await response.json()
         console.log('quiz by id', json.data)
-        if (response.status === 200) {
+        if (response.status) {
             setQuiz(json.data)
             // Alert.alert('Diskusi berhasil ditambahkan!')
         }
-        if (response.status === 400) Alert.alert('Quiz gagal dibaca!')
+        if (!response.status) Alert.alert('Quiz gagal dibaca!')
     };
 
-    const onPressSubmitDiscussion = async () => {
-        setMode('LIST')
-        const response = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: quiz,
-            }),
-        })
-        const json = await response.json()
-        console.log('login', json.data)
-        if (response.status === 200) {
-            Alert.alert('Diskusi berhasil ditambahkan!')
+    const onSubmitDeleteContent = async (contentId: number) => {
+        try {
+            const response = await fetch(`${API_URL}/lessons/${contentId}`, {
+                method: 'DELETE',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+            const json = await response.json()
+            console.log('delete content', json)
+            if (response.status) {
+                Alert.alert('Hapus Konten Berhasil')
+                setMode('LIST')
+            }
+            if (!response.status) Alert.alert('Gagal menghapus konten')
+
+        } catch (error) {
+            Alert.alert('Gagal menghapus konten')
         }
-        if (response.status === 400) Alert.alert('Diskusi gagal ditambahkan!')
     };
 
     const handleAnswerQuiz = (questionIdx: number, answerIdx: string) => {
@@ -97,19 +102,81 @@ function LessonDetail() {
                             <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{lIdx + 1}. {c.title}</Text>
                             <Text style={{ fontWeight: '400', fontSize: 12, marginVertical: 2 }}>{c.body}</Text>
                         </TouchableOpacity>
+                        {data?.role === 'LECTURER' &&
+                            <View style={{ marginTop: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Button
+                                    onPress={() => {
+                                        Alert.alert(
+                                            'Apakah kamu yakin untuk menghapus materi ini?',
+                                            `${c.title} - ${c.id}`,
+                                            [
+                                                {
+                                                    text: 'Ok',
+                                                    onPress: () => {
+                                                        onSubmitDeleteContent(c.id)
+                                                    }
+                                                    ,
+                                                    style: 'cancel',
+                                                },
+                                                {
+                                                    text: 'Cancel',
+                                                    onPress: () => Alert.alert('Cancel Pressed'),
+                                                    style: 'cancel',
+                                                },
+                                            ],
+                                            {
+                                                cancelable: true,
+                                                onDismiss: () =>
+                                                    Alert.alert(
+                                                        'This alert was dismissed by tapping outside of the alert dialog.',
+                                                    ),
+                                            },
+                                        )
+                                    }}
+                                    title="Hapus"
+                                    color={'#800000'}
+                                />
+                                <Button
+                                    onPress={() => {
+                                        setEditMode(true)
+                                        setContentId(c?.id)
+                                    }
+                                    }
+                                    title="Edit"
+                                    color={'#004aad'}
+                                />
+                            </View>
+                        }
                     </View>
                 })}
             </View>
 
-            <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%' }}>
+            <View style={{ display: 'flex', alignItems: 'flex-start', paddingVertical: 20, width: '100%', margin: 4 }}>
+                <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>Quiz: {quiz?.description}</Text>
                 <View style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
-                    {dummyQuiz.map((item, index) => <View key={`quiz-${index}`} style={{ paddingHorizontal: 20 }}>
-                        <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{item.content}</Text>
-                        {/* <RadioGroup onPress={(e) => handleAnswerQuiz(index, e)} radioButtons={item.option.map((i, idx) => {
-                            return { id: `${idx}`, label: i, value: i }
-                        })} selectedId={`${quiz[index].answer}`} /> */}
+                    {quiz?.questions?.map((item: any, index: number) => <View key={`quiz-${index}`} style={{ paddingHorizontal: 20 }}>
+                        <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{index + 1}. {item.content}</Text>
                     </View>)}
                 </View>
+                {data?.role === 'STUDENT' &&
+                    <View style={{ display: 'flex', alignItems: 'flex-start', width: '100%', marginHorizontal: 10 }}>
+                        <View key={`student-result`} style={{ paddingHorizontal: 25, display: 'flex', width: '100%' }}>
+                            <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>Total Pertanyaan: {lesson?.quiz_results?.question_count}</Text>
+                            <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>Benar: {lesson?.quiz_results?.correct_answer_count}</Text>
+                            <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>Salah: {lesson?.quiz_results?.wrong_answer_count}</Text>
+                            <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>Nilai: {lesson?.quiz_results?.correct_answer_ratio}</Text>
+                        </View>
+                    </View>
+                }
+                {data?.role === 'LECTURER' &&
+                    <View style={{ display: 'flex', alignItems: 'flex-start', width: '100%', marginHorizontal: 10 }}>
+                        {quiz?.results?.map((item: any, index: number) => <View key={`result-${index}`} style={{ paddingHorizontal: 25, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', gap: 20 }}>
+                            <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>{item?.user_name}</Text>
+                            <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>Benar: {item?.correct_answer_count}</Text>
+                            <Text style={{ fontWeight: '700', fontSize: 14, marginVertical: 8 }}>Nilai: {item?.correct_answer_ratio}</Text>
+                        </View>)}
+                    </View>
+                }
                 {/* <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                     <Button
                         onPress={onPressSubmitDiscussion}
@@ -119,19 +186,17 @@ function LessonDetail() {
                 </View> */}
             </View>
 
-            {data?.role === "STUDENT" &&
+            {data?.role === "STUDENT" && lesson?.quiz_id &&
                 <AnswerQuiz />
 
             }
-            {data?.role === 'LECTURER' &&
-                <>
-                    <CreateContent />
-                    {!lesson?.quiz_id ?
-                        <CreateQuiz />
-                        : <CreateQuestion />
-                    }
-                </>
+            {data?.role === 'LECTURER' && !editMode && <CreateContent />}
+            {data?.role === 'LECTURER' && editMode && <EditContent contentId={contentId} setEditMode={setEditMode} />}
+            {data?.role === 'LECTURER' && !lesson?.quiz_id ?
+                <CreateQuiz />
+                : <CreateQuestion />
             }
+
             <View style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: 50 }}>
                 <Button
                     onPress={() => setMode('DETAIL')}

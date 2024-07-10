@@ -51,6 +51,12 @@ export interface ILesson {
     progress: IProgress,
     contents: IContent[]
     quiz_id: number
+    quiz_results: {
+        correct_answer_count: number,
+        correct_answer_ratio: number,
+        question_count: number,
+        wrong_answer_count: number,
+    }
 }
 export interface ICourseData {
     id: number
